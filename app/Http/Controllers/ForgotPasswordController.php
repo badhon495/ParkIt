@@ -1,3 +1,4 @@
+<?php
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -17,14 +18,14 @@ class ForgotPasswordController extends Controller
         $request->validate([
             'email' => 'required|email',
         ]);
-        $user = DB::table('usr_user')->where('email', $request->email)->first();
+        $user = DB::table('users')->where('email', $request->email)->first();
         if (!$user) {
             return back()->withErrors(['email' => 'No user found with this email'])->withInput();
         }
         // Generate new password
         $newPassword = substr(str_shuffle('abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789'), 0, 10);
         // Update password in DB (hashed)
-        DB::table('usr_user')->where('user_id', $user->user_id)->update([
+        DB::table('users')->where('id', $user->id)->update([
             'password' => Hash::make($newPassword),
         ]);
         // Send email

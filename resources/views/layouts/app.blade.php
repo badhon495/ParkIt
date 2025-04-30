@@ -8,7 +8,7 @@
 </head>
 <body>
     <header>
-        <div class="logo">ParkIt Logo</div>
+        <div class="logo">ParkIt</div>
         <nav>
             <a href="/" class="{{ request()->is('/') ? 'active' : '' }}">Home</a>
             <a href="/find-parking" class="{{ request()->is('find-parking') ? 'active' : '' }}">Find Parking</a>
@@ -50,7 +50,7 @@
     @yield('content')
     <footer>
         <div class="footer-content">
-            <div class="logo">ParkIt Logo</div>
+            <div class="logo">ParkIt</div>
             <div class="footer-links">
                 <a href="#">Contact Us</a>
                 <a href="#">Report Issue</a>
