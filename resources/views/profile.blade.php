@@ -13,6 +13,10 @@
         <div style="text-align:center;margin-top:1.5rem;">
             <a href="/profile/edit" style="background:#444;color:#fff;padding:0.5rem 1.5rem;border-radius:3px;text-decoration:none;font-weight:600;">Update Profile</a>
         </div>
+        <form method="POST" action="{{ route('profile.delete') }}" onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');" style="text-align:center;margin-top:1rem;">
+            @csrf
+            <button type="submit" style="background:#e3342f;color:#fff;padding:0.5rem 1.5rem;border-radius:3px;font-weight:600;border:none;width:calc(100% - 0px);max-width:200px;">Delete Account</button>
+        </form>
     </div>
 </main>
 @endsection

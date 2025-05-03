@@ -13,6 +13,13 @@ use App\Http\Controllers\FindParkingController;
 use App\Http\Controllers\BookingDetailsController;
 
 Route::get('/', function () {
+    // If logged in, redirect based on user type
+    if (session('user_type') === 'admin') {
+        return redirect()->route('admin.bookings');
+    } elseif (session('user_type') === 'owner') {
+        return redirect('/your-parking');
+    }
+    // Otherwise, show homepage for guests
     $featuredGarages = DB::table('parking_details')->orderByDesc('garage_id')->limit(3)->get();
     return view('welcome', compact('featuredGarages'));
 });
@@ -35,6 +42,7 @@ Route::post('/forgot-password', [ForgotPasswordController::class, 'sendNewPasswo
 Route::get('/profile', [ProfileController::class, 'show']);
 Route::get('/profile/edit', [ProfileController::class, 'edit']);
 Route::post('/profile/edit', [ProfileController::class, 'update']);
+Route::post('/profile/delete', [ProfileController::class, 'delete'])->name('profile.delete');
 
 Route::get('/register-parking', [RegisterParkingController::class, 'showForm']);
 Route::post('/register-parking', [RegisterParkingController::class, 'register'])->name('register-parking');
@@ -49,3 +57,20 @@ Route::post('/booking-details/{garage_id}', [BookingDetailsController::class, 's
 Route::get('/order-confirmation/{booking_id}', [BookingDetailsController::class, 'confirmation'])->name('order-confirmation');
 
 Route::get('/previous-parking', [BookingDetailsController::class, 'previous'])->name('previous-parking');
+
+Route::get('/admin/bookings', [BookingDetailsController::class, 'adminBookings'])->name('admin.bookings');
+Route::post('/admin/bookings/{booking_id}/edit', [BookingDetailsController::class, 'adminEditBooking'])->name('admin.bookings.edit');
+Route::get('/admin/users', [BookingDetailsController::class, 'adminUsers'])->name('admin.users');
+
+// Admin: Edit user
+Route::get('/admin/users/{id}/edit', [ProfileController::class, 'adminEdit'])->name('admin.users.edit');
+Route::post('/admin/users/{id}/edit', [ProfileController::class, 'adminUpdate'])->name('admin.users.update');
+Route::post('/admin/users/{id}/delete', [ProfileController::class, 'adminDelete'])->name('admin.users.delete');
+
+Route::get('/admin/parking', [BookingDetailsController::class, 'adminParkingList'])->name('admin.parking');
+
+// Admin: Edit parking (admin)
+Route::get('/admin/edit-parking/{garage_id}', [BookingDetailsController::class, 'adminEditParkingView'])->name('admin.edit-parking');
+Route::post('/admin/edit-parking/{garage_id}', [BookingDetailsController::class, 'adminEditParkingUpdate'])->name('admin.edit-parking.update');
+
+Route::get('/owner/dashboard', [BookingDetailsController::class, 'ownerDashboard'])->name('owner.dashboard');

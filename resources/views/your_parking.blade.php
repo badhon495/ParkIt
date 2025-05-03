@@ -3,6 +3,14 @@
 @section('content')
     <main>
         <h1 class="text-center">Your Listed Garages</h1>
+        <form method="GET" action="" style="margin-bottom:2rem;display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;">
+            <input type="text" name="garage_id" placeholder="Garage ID" value="{{ request('garage_id') }}" style="padding:0.5rem;">
+            <input type="text" name="area" placeholder="Area" value="{{ request('area') }}" style="padding:0.5rem;">
+            <input type="text" name="division" placeholder="Division" value="{{ request('division') }}" style="padding:0.5rem;">
+            <input type="text" name="nid" placeholder="NID" value="{{ request('nid') }}" style="padding:0.5rem;">
+            <button type="submit" class="search-button">Search</button>
+            <a href="{{ url()->current() }}" style="padding:0.5rem 1rem;background:#eee;border-radius:4px;text-decoration:none;">Reset</a>
+        </form>
         <div class="results-table">
             <table>
                 <thead>

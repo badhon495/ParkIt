@@ -24,7 +24,7 @@
                 <a href="/signin" class="signin-btn">Sign in</a>
             @elseif(session('user_type') === 'owner')
                 {{-- Owner Navbar with Dropdown --}}
-                <a href="/" class="{{ request()->is('/') ? 'active' : '' }}">Home</a>
+                <a href="/owner/dashboard" class="{{ request()->is('owner/dashboard') ? 'active' : '' }}">Dashboard</a>
                 <a href="/your-parking" class="{{ request()->is('your-parking') ? 'active' : '' }}">Your Listing</a>
                 <a href="/register-parking" class="{{ request()->is('register-parking') ? 'active' : '' }}">Register Parking</a>
                 <div class="dropdown" style="display:inline-block;position:relative;">
@@ -39,6 +39,35 @@
                 </div>
                 <script>
                 // Simple dropdown toggle for owner
+                document.addEventListener('DOMContentLoaded', function() {
+                    var btn = document.querySelectorAll('.dropdown-toggle')[0];
+                    var menu = document.querySelectorAll('.dropdown-menu')[0];
+                    if(btn && menu) {
+                        btn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+                        });
+                        document.addEventListener('click', function() {
+                            menu.style.display = 'none';
+                        });
+                    }
+                });
+                </script>
+            @elseif(session('user_type') === 'admin')
+                {{-- Admin Navbar with Dropdown --}}
+                <a href="/admin/bookings" class="{{ request()->is('admin/bookings') ? 'active' : '' }}">Bookings</a>
+                <a href="/admin/users" class="{{ request()->is('admin/users') ? 'active' : '' }}">User List</a>
+                <a href="/admin/parking" class="{{ request()->is('admin/parking') ? 'active' : '' }}">Parking List</a>
+                <div class="dropdown" style="display:inline-block;position:relative;">
+                    <button class="dropdown-toggle" style="background:#222;color:#fff;padding:8px 16px;border-radius:6px;border:none;cursor:pointer;">
+                        {{ session('user_name') }} <span style="font-size:12px;">&#9662;</span>
+                    </button>
+                    <div class="dropdown-menu" style="display:none;position:absolute;right:0;background:#fff;min-width:160px;box-shadow:0 8px 16px rgba(0,0,0,0.2);z-index:1;">
+                        <a href="/logout" style="display:block;padding:10px 16px;color:#e53e3e;text-decoration:none;">Logout</a>
+                    </div>
+                </div>
+                <script>
+                // Simple dropdown toggle for admin
                 document.addEventListener('DOMContentLoaded', function() {
                     var btn = document.querySelectorAll('.dropdown-toggle')[0];
                     var menu = document.querySelectorAll('.dropdown-menu')[0];

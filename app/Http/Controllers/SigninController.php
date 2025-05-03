@@ -21,6 +21,16 @@ class SigninController extends Controller
             'password' => 'required|string',
         ]);
 
+        // Hardcoded admin login
+        if (($request->login === 'admin@gmail.com' || $request->login === 'admin') && $request->password === 'admin123') {
+            Session::put('user_id', 0);
+            Session::put('user_name', 'Admin');
+            Session::put('user_type', 'admin');
+            Session::put('user_phone', 'N/A');
+            Session::put('user_email', 'admin@gmail.com');
+            return redirect('/admin/bookings')->with('success', 'Logged in as admin!');
+        }
+
         $user = DB::table('users')
             ->where('phone', $request->login)
             ->orWhere('email', $request->login)
@@ -32,6 +42,10 @@ class SigninController extends Controller
             Session::put('user_type', $user->type);
             Session::put('user_phone', $user->phone);
             Session::put('user_email', $user->email);
+            // If admin user in DB, also set admin type
+            if ($user->email === 'admin@gmail.com') {
+                Session::put('user_type', 'admin');
+            }
             return redirect('/')->with('success', 'Logged in successfully!');
         }
         return back()->withErrors(['login' => 'Invalid email/phone or password'])->withInput();

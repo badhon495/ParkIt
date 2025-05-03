@@ -2,18 +2,59 @@
 @section('title', 'ParkIt | Your Parking Solution')
 @section('content')
     <main>
-        <div class="hero">
-            <div class="hero-content">
-                <h1>Your Parking Solution</h1>
-                <p>Whenever you're near schools, shopping malls, hospitals & restaurants you're damn sure to have a hard time finding the right parking spot for you. If you think you can just park by the road side, you'll be facing legal problems & fines of 5000 from the authority. Why waste your team & money. Start hourly parking with ParkIt & happy parking.</p>
-                <a href="/find-parking" class="btn">Find Parking</a>
-            </div>
-            <div class="hero-image">
-                <div class="hero-image-placeholder">
-                    <svg class="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5V19a2 2 0 002 2h14a2 2 0 002-2v-2.5M16 3.13a4 4 0 010 7.75M12 7v6m0 0l-3-3m3 3l3-3" /></svg>
+        <!-- Hero Slider (content + image) -->
+        <div id="hero-slider" style="position:relative;width:100%;height:340px;overflow:hidden;margin-bottom:2.5rem;">
+            <div class="hero-slide" style="width:100%;height:100%;position:absolute;top:0;left:0;transition:opacity 0.7s;opacity:1;z-index:2;display:flex;align-items:center;">
+                <div class="hero-content" style="flex:1;padding:2rem;">
+                    <h1>Your Parking Solution</h1>
+                    <p>Whenever you're near schools, shopping malls, hospitals & restaurants you're damn sure to have a hard time finding the right parking spot for you. If you think you can just park by the road side, you'll be facing legal problems & fines of 5000 from the authority. Why waste your time & money. Start hourly parking with ParkIt & happy parking.</p>
+                    <a href="/find-parking" class="btn">Find Parking</a>
+                </div>
+                <div class="hero-image" style="flex:1;display:flex;align-items:center;justify-content:center;">
+                    <img src="{{ asset('images/homepage1.jpg') }}" alt="Hero 1" style="width:20rem;height:12rem;object-fit:cover;border-radius:0.25rem;">
                 </div>
             </div>
+            <div class="hero-slide" style="width:100%;height:100%;position:absolute;top:0;left:0;transition:opacity 0.7s;opacity:0;z-index:1;display:flex;align-items:center;">
+                <div class="hero-content" style="flex:1;padding:2rem;">
+                    <h1>Earn Some Real Cash</h1>
+                    <p>At ParkIt, you have the opportunity to turn your unused garage space into a steady source of income. Simply create an account and register your garage with us — it's quick, easy, and completely hassle-free. Once you’re registered, we’ll take care of the rest, from connecting you with potential renters to managing bookings and payments. Start earning real cash effortlessly with ParkIt today!</p>
+                    <a href="/register-parking" class="btn">List Your Garage</a>
+                </div>
+                <div class="hero-image" style="flex:1;display:flex;align-items:center;justify-content:center;">
+                    <img src="{{ asset('images/homepage2.jpeg') }}" alt="Hero 2" style="width:20rem;height:12rem;object-fit:cover;border-radius:0.25rem;">
+                </div>
+            </div>
+            <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:3;">
+                <span class="hero-dot" style="width:12px;height:12px;border-radius:50%;background:#fff;opacity:0.7;cursor:pointer;"></span>
+                <span class="hero-dot" style="width:12px;height:12px;border-radius:50%;background:#fff;opacity:0.4;cursor:pointer;"></span>
+            </div>
         </div>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var slides = document.querySelectorAll('.hero-slide');
+            var dots = document.querySelectorAll('.hero-dot');
+            var current = 0;
+            function showSlide(idx) {
+                slides.forEach(function(slide, i) {
+                    slide.style.opacity = (i === idx) ? '1' : '0';
+                    slide.style.zIndex = (i === idx) ? '2' : '1';
+                });
+                dots.forEach(function(dot, i) {
+                    dot.style.opacity = (i === idx) ? '0.7' : '0.4';
+                });
+                current = idx;
+            }
+            function nextSlide() {
+                showSlide((current + 1) % slides.length);
+            }
+            dots.forEach(function(dot, i) {
+                dot.addEventListener('click', function() { showSlide(i); });
+            });
+            setInterval(nextSlide, 3500);
+        });
+        </script>
+        <!-- End Hero Slider -->
+
         <h2 class="section-heading">Experience the Best Service Without Breaking the Bank</h2>
         <div class="card-grid" style="margin-bottom:2.5rem;">
             @foreach($featuredGarages as $garage)

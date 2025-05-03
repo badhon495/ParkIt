@@ -14,8 +14,22 @@ class YourParkingController extends Controller
         if (!$userId) {
             return redirect('/signin');
         }
-        // Fetch garages listed by this user
-        $garages = DB::table('parking_details')->where('usr_id', $userId)->get();
+
+        $query = DB::table('parking_details')->where('usr_id', $userId);
+        if ($request->filled('garage_id')) {
+            $query->where('garage_id', $request->garage_id);
+        }
+        if ($request->filled('area')) {
+            $query->where('area', 'like', '%' . $request->area . '%');
+        }
+        if ($request->filled('division')) {
+            $query->where('division', 'like', '%' . $request->division . '%');
+        }
+        if ($request->filled('nid')) {
+            $query->where('nid', 'like', '%' . $request->nid . '%');
+        }
+
+        $garages = $query->get();
         return view('your_parking', compact('garages'));
     }
 }

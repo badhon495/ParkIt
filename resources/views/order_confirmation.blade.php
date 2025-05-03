@@ -18,7 +18,9 @@
                 $total_rent = ($garage->rent ?? 0) * $hours;
             @endphp
             <input type="text" value="{{ $total_rent }}" placeholder="Total Rent" readonly style="width:100%;margin-bottom:1.5rem;">
-            <button class="search-button" style="width:100%;font-size:1.1rem;padding:0.7rem 0;">Done</button>
+            <form method="get" action="/previous-parking" style="width:100%;">
+                <button class="search-button" style="width:100%;font-size:1.1rem;padding:0.7rem 0;">Done</button>
+            </form>
             <div style="text-align:center;margin-top:1.5rem;font-size:0.95rem;color:#888;">
                 Your parking has been booked for 10 Minutes.<br>
                 Please pay to confirm your order
