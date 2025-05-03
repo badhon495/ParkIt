@@ -69,7 +69,7 @@ CREATE TABLE bookings (
     end_time TIMESTAMP,
     vehicle_type VARCHAR(50),
     vehicle_details TEXT,
-    tranx_id TEXT
+
 );
 
 EOF

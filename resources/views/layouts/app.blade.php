@@ -5,45 +5,85 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'ParkIt')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        .dropdown-menu a:hover {
+            background: #f3f3f3;
+            color: #111;
+        }
+    </style>
 </head>
 <body>
     <header>
         <div class="logo">ParkIt</div>
         <nav>
-            <a href="/" class="{{ request()->is('/') ? 'active' : '' }}">Home</a>
-            <a href="/find-parking" class="{{ request()->is('find-parking') ? 'active' : '' }}">Find Parking</a>
-            <a href="#">Register Parking</a>
-            @if(session('user_name'))
+            @if(!session('user_name'))
+                {{-- Guest Navbar --}}
+                <a href="/" class="{{ request()->is('/') ? 'active' : '' }}">Home</a>
+                <a href="/find-parking" class="{{ request()->is('find-parking') ? 'active' : '' }}">Find Parking</a>
+                <a href="/register-parking" class="{{ request()->is('register-parking') ? 'active' : '' }}">Register Parking</a>
+                <a href="/signin" class="signin-btn">Sign in</a>
+            @elseif(session('user_type') === 'owner')
+                {{-- Owner Navbar with Dropdown --}}
+                <a href="/" class="{{ request()->is('/') ? 'active' : '' }}">Home</a>
+                <a href="/your-parking" class="{{ request()->is('your-parking') ? 'active' : '' }}">Your Listing</a>
+                <a href="/register-parking" class="{{ request()->is('register-parking') ? 'active' : '' }}">Register Parking</a>
                 <div class="dropdown" style="display:inline-block;position:relative;">
-                    <button class="signin-btn" id="profileDropdownBtn" type="button">
-                        {{ session('user_name') }} &#x25BC;
+                    <button class="dropdown-toggle" style="background:#222;color:#fff;padding:8px 16px;border-radius:6px;border:none;cursor:pointer;">
+                        {{ session('user_name') }} <span style="font-size:12px;">&#9662;</span>
                     </button>
-                    <div id="profileDropdown" class="dropdown-content" style="display:none;position:absolute;right:0;background:#fff;min-width:160px;box-shadow:0 2px 8px rgba(0,0,0,0.15);z-index:1;">
-                        <a href="/profile" style="display:block;padding:10px 16px;color:#333;text-decoration:none;">View Profile</a>
-                        <a href="/profile/edit" style="display:block;padding:10px 16px;color:#333;text-decoration:none;">Update Profile</a>
+                    <div class="dropdown-menu" style="display:none;position:absolute;right:0;background:#fff;min-width:160px;box-shadow:0 8px 16px rgba(0,0,0,0.2);z-index:1;">
+                        <a href="/profile" style="display:block;padding:10px 16px;color:#222;text-decoration:none;">Profile</a>
+                        <a href="/profile/edit" style="display:block;padding:10px 16px;color:#222;text-decoration:none;">Update Profile</a>
                         <a href="/logout" style="display:block;padding:10px 16px;color:#e53e3e;text-decoration:none;">Logout</a>
                     </div>
                 </div>
-                <style>
-                    .dropdown-content.show { display: block !important; }
-                </style>
                 <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        var btn = document.getElementById('profileDropdownBtn');
-                        var dropdown = document.getElementById('profileDropdown');
+                // Simple dropdown toggle for owner
+                document.addEventListener('DOMContentLoaded', function() {
+                    var btn = document.querySelectorAll('.dropdown-toggle')[0];
+                    var menu = document.querySelectorAll('.dropdown-menu')[0];
+                    if(btn && menu) {
                         btn.addEventListener('click', function(e) {
                             e.stopPropagation();
-                            dropdown.classList.toggle('show');
+                            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
                         });
-                        document.addEventListener('click', function(e) {
-                            if (!dropdown.contains(e.target) && !btn.contains(e.target)) {
-                                dropdown.classList.remove('show');
-                            }
+                        document.addEventListener('click', function() {
+                            menu.style.display = 'none';
                         });
-                    });
+                    }
+                });
                 </script>
             @else
-                <a href="/signin" class="signin-btn">Sign in</a>
+                {{-- Regular User Navbar --}}
+                <a href="/" class="{{ request()->is('/') ? 'active' : '' }}">Home</a>
+                <a href="/find-parking" class="{{ request()->is('find-parking') ? 'active' : '' }}">Find Parking</a>
+                <a href="/previous-parking" class="{{ request()->is('previous-parking') ? 'active' : '' }}">Previous Parking</a>
+                <div class="dropdown" style="display:inline-block;position:relative;">
+                    <button class="dropdown-toggle" style="background:#222;color:#fff;padding:8px 16px;border-radius:6px;border:none;cursor:pointer;">
+                        {{ session('user_name') }} <span style="font-size:12px;">&#9662;</span>
+                    </button>
+                    <div class="dropdown-menu" style="display:none;position:absolute;right:0;background:#fff;min-width:160px;box-shadow:0 8px 16px rgba(0,0,0,0.2);z-index:1;">
+                        <a href="/profile" style="display:block;padding:10px 16px;color:#222;text-decoration:none;">Profile</a>
+                        <a href="/profile/edit" style="display:block;padding:10px 16px;color:#222;text-decoration:none;">Update Profile</a>
+                        <a href="/logout" style="display:block;padding:10px 16px;color:#e53e3e;text-decoration:none;">Logout</a>
+                    </div>
+                </div>
+                <script>
+                // Simple dropdown toggle
+                document.addEventListener('DOMContentLoaded', function() {
+                    var btn = document.querySelector('.dropdown-toggle');
+                    var menu = document.querySelector('.dropdown-menu');
+                    if(btn && menu) {
+                        btn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+                        });
+                        document.addEventListener('click', function() {
+                            menu.style.display = 'none';
+                        });
+                    }
+                });
+                </script>
             @endif
         </nav>
     </header>

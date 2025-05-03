@@ -1,0 +1,81 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
+class EditParkingController extends Controller
+{
+    public function edit($garage_id)
+    {
+        $userId = session('user_id');
+        $garage = DB::table('parking_details')->where('garage_id', $garage_id)->where('usr_id', $userId)->first();
+        if (!$garage) {
+            return redirect('/your-parking')->with('error', 'Garage not found or access denied.');
+        }
+        $user = [
+            'name' => session('user_name'),
+            'phone' => session('user_phone'),
+            'email' => session('user_email'),
+        ];
+        return view('edit_parking', compact('garage', 'user'));
+    }
+
+    public function update(Request $request, $garage_id)
+    {
+        $userId = session('user_id');
+        $garage = DB::table('parking_details')->where('garage_id', $garage_id)->where('usr_id', $userId)->first();
+        if (!$garage) {
+            return redirect('/your-parking')->with('error', 'Garage not found or access denied.');
+        }
+        $validated = $request->validate([
+            'owner_name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'email' => 'required|email|max:255',
+            'division' => 'required|string|max:100',
+            'area' => 'required|string|max:100',
+            'address' => 'required|string',
+            'cc_camera' => 'required|in:0,1',
+            'guard' => 'required|in:0,1',
+            'indoor' => 'required|in:indoor,outdoor',
+            'bike_slot' => 'nullable|integer',
+            'car_slot' => 'nullable|integer',
+            'bicycle_slot' => 'nullable|integer',
+            'start_time' => 'required|string',
+            'end_time' => 'required|string',
+            'place_type' => 'required|string',
+            'nid' => 'required|string',
+            'customer_id' => 'required|string',
+            'passport' => 'nullable|string',
+            'payment_method' => 'required|string',
+            'bank_details' => 'nullable|string',
+            'alternate_person_name' => 'nullable|string',
+            'alternate_person_phone' => 'nullable|string',
+            'rent' => 'required|numeric|min:0',
+        ]);
+        DB::table('parking_details')->where('garage_id', $garage_id)->update([
+            'rent' => $request->input('rent'),
+            'parking_type' => $request->input('place_type'),
+            'area' => $request->input('area'),
+            'division' => $request->input('division'),
+            'location' => $request->input('address'),
+            'camera' => $request->input('cc_camera'),
+            'guard' => $request->input('guard'),
+            'bike_slot' => $request->input('bike_slot'),
+            'car_slot' => $request->input('car_slot'),
+            'bicycle_slot' => $request->input('bicycle_slot'),
+            'start_time' => $request->input('start_time'),
+            'end_time' => $request->input('end_time'),
+            'nid' => $request->input('nid'),
+            'utility_bill' => $request->input('customer_id'),
+            'passport' => $request->input('passport'),
+            'alt_name' => $request->input('alternate_person_name'),
+            'alt_phone' => $request->input('alternate_person_phone'),
+            'payment_method' => $request->input('payment_method'),
+            'bank_details' => $request->input('bank_details'),
+            'indoor' => $request->input('indoor'),
+        ]);
+        return redirect('/your-parking')->with('success', 'Garage details updated successfully!');
+    }
+}

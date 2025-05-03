@@ -54,7 +54,7 @@ MAIL_PORT=587
 MAIL_USERNAME=your mail
 MAIL_PASSWORD=password without any gap
 MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS=sadmansakib022@gmail.com
+MAIL_FROM_ADDRESS=your mail
 MAIL_FROM_NAME="ParkIt"
 ```
 

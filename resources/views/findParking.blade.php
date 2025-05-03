@@ -5,51 +5,53 @@
         <h1 class="text-center">Choose Your Garage Location</h1>
         
         <!-- Search Filters -->
+        <form method="GET" action="/find-parking">
         <div class="search-filters">
             <div class="filters-grid" style="grid-template-columns: repeat(6, 1fr);">
                 <div>
-                    <select class="filter-select">
+                    <select class="filter-select" name="division">
                         <option value="">District</option>
-                        <option value="1">Dhaka</option>
-                        <option value="2">Chittagong</option>
+                        <option value="Dhaka" {{ (isset($filters['division']) && $filters['division']=='Dhaka') ? 'selected' : '' }}>Dhaka</option>
+                        <option value="Chittagong" {{ (isset($filters['division']) && $filters['division']=='Chittagong') ? 'selected' : '' }}>Chittagong</option>
                     </select>
                 </div>
                 <div>
-                    <select class="filter-select">
+                    <select class="filter-select" name="area">
                         <option value="">Area</option>
-                        <option value="adabor">Adabor</option>
-                        <option value="badda">Badda</option>
-                        <option value="mohakhali">Mohakhali</option>
+                        <option value="adabor" {{ (isset($filters['area']) && $filters['area']=='adabor') ? 'selected' : '' }}>Adabor</option>
+                        <option value="badda" {{ (isset($filters['area']) && $filters['area']=='badda') ? 'selected' : '' }}>Badda</option>
+                        <option value="mohakhali" {{ (isset($filters['area']) && $filters['area']=='mohakhali') ? 'selected' : '' }}>Mohakhali</option>
                     </select>
                 </div>
                 <div>
-                    <select class="filter-select">
+                    <select class="filter-select" name="vehicle">
                         <option value="">Vehicle</option>
-                        <option value="car">Car</option>
-                        <option value="bike">Bike</option>
+                        <option value="car" {{ (isset($filters['vehicle']) && $filters['vehicle']=='car') ? 'selected' : '' }}>Car</option>
+                        <option value="bike" {{ (isset($filters['vehicle']) && $filters['vehicle']=='bike') ? 'selected' : '' }}>Bike</option>
+                        <option value="bicycle" {{ (isset($filters['vehicle']) && $filters['vehicle']=='bicycle') ? 'selected' : '' }}>Bicycle</option>
                     </select>
                 </div>
                 <div>
-                    <select class="filter-select">
+                    <select class="filter-select" name="price_range">
                         <option value="">Price Range</option>
-                        <option value="1">100-200</option>
-                        <option value="2">200-300</option>
-                        <option value="3">300-400</option>
+                        <option value="1" {{ (isset($filters['price_range']) && $filters['price_range']=='1') ? 'selected' : '' }}>100-200</option>
+                        <option value="2" {{ (isset($filters['price_range']) && $filters['price_range']=='2') ? 'selected' : '' }}>200-300</option>
+                        <option value="3" {{ (isset($filters['price_range']) && $filters['price_range']=='3') ? 'selected' : '' }}>300-400</option>
                     </select>
                 </div>
                 <div>
-                    <select class="filter-select">
+                    <select class="filter-select" name="duration">
                         <option value="">Duration</option>
-                        <option value="1">1 Hour</option>
-                        <option value="2">2 Hours</option>
-                        <option value="3">3+ Hours</option>
+                        <option value="1" {{ (isset($filters['duration']) && $filters['duration']=='1') ? 'selected' : '' }}>1 Hour</option>
+                        <option value="2" {{ (isset($filters['duration']) && $filters['duration']=='2') ? 'selected' : '' }}>2 Hours</option>
+                        <option value="3" {{ (isset($filters['duration']) && $filters['duration']=='3') ? 'selected' : '' }}>3+ Hours</option>
                     </select>
                 </div>
                 <div>
-                    <select class="filter-select">
+                    <select class="filter-select" name="guard">
                         <option value="">Guard</option>
-                        <option value="1">Yes</option>
-                        <option value="0">No</option>
+                        <option value="1" {{ (isset($filters['guard']) && $filters['guard']=='1') ? 'selected' : '' }}>Yes</option>
+                        <option value="0" {{ (isset($filters['guard']) && $filters['guard']=='0') ? 'selected' : '' }}>No</option>
                     </select>
                 </div>
             </div>
@@ -57,26 +59,27 @@
                 <div></div>
                 <div></div>
                 <div>
-                    <select class="filter-select">
+                    <select class="filter-select" name="place_type">
                         <option value="">Place Type</option>
-                        <option value="residential">Residential</option>
-                        <option value="market">Market</option>
+                        <option value="residential" {{ (isset($filters['place_type']) && $filters['place_type']=='residential') ? 'selected' : '' }}>Residential</option>
+                        <option value="market" {{ (isset($filters['place_type']) && $filters['place_type']=='market') ? 'selected' : '' }}>Market</option>
                     </select>
                 </div>
                 <div>
-                    <select class="filter-select">
+                    <select class="filter-select" name="cc_camera">
                         <option value="">CC Camera</option>
-                        <option value="1">Yes</option>
-                        <option value="0">No</option>
+                        <option value="1" {{ (isset($filters['cc_camera']) && $filters['cc_camera']=='1') ? 'selected' : '' }}>Yes</option>
+                        <option value="0" {{ (isset($filters['cc_camera']) && $filters['cc_camera']=='0') ? 'selected' : '' }}>No</option>
                     </select>
                 </div>
                 <div></div>
                 <div></div>
             </div>
             <div style="display: flex; justify-content: center; margin-top: 1rem;">
-                <button class="search-button">Search</button>
+                <button class="search-button" type="submit">Search</button>
             </div>
         </div>
+        </form>
         
         <!-- Page Size -->
         <div class="page-size">
@@ -134,125 +137,36 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Row 1 -->
-                    <tr>
-                        <td>1</td>
-                        <td>
-                            <div class="table-image">
-                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                            </div>
-                        </td>
-                        <td>150</td>
-                        <td>Residential</td>
-                        <td>Adabor</td>
-                        <td>Yes</td>
-                        <td>Yes</td>
-                        <td>
-                            <button class="details-button">Details</button>
-                        </td>
-                    </tr>
-                    
-                    <!-- Row 2 -->
-                    <tr>
-                        <td>2</td>
-                        <td>
-                            <div class="table-image">
-                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                            </div>
-                        </td>
-                        <td>250</td>
-                        <td>Market</td>
-                        <td>Adabor</td>
-                        <td>Yes</td>
-                        <td>Yes</td>
-                        <td>
-                            <button class="details-button">Details</button>
-                        </td>
-                    </tr>
-                    
-                    <!-- Row 3 -->
-                    <tr>
-                        <td>3</td>
-                        <td>
-                            <div class="table-image">
-                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                            </div>
-                        </td>
-                        <td>350</td>
-                        <td>Residential</td>
-                        <td>Adabor</td>
-                        <td>Yes</td>
-                        <td>Yes</td>
-                        <td>
-                            <button class="details-button">Details</button>
-                        </td>
-                    </tr>
-                    
-                    <!-- Row 4 -->
-                    <tr>
-                        <td>4</td>
-                        <td>
-                            <div class="table-image">
-                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                            </div>
-                        </td>
-                        <td>100</td>
-                        <td>Market</td>
-                        <td>Adabor</td>
-                        <td>No</td>
-                        <td>No</td>
-                        <td>
-                            <button class="details-button">Details</button>
-                        </td>
-                    </tr>
-                    
-                    <!-- Row 5 -->
-                    <tr>
-                        <td>5</td>
-                        <td>
-                            <div class="table-image">
-                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                            </div>
-                        </td>
-                        <td>150</td>
-                        <td>Residential</td>
-                        <td>Adabor</td>
-                        <td>No</td>
-                        <td>Yes</td>
-                        <td>
-                            <button class="details-button">Details</button>
-                        </td>
-                    </tr>
-                    
-                    <!-- Row 6 -->
-                    <tr>
-                        <td>6</td>
-                        <td>
-                            <div class="table-image">
-                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                            </div>
-                        </td>
-                        <td>170</td>
-                        <td>Market</td>
-                        <td>Adabor</td>
-                        <td>Yes</td>
-                        <td>No</td>
-                        <td>
-                            <button class="details-button">Details</button>
-                        </td>
-                    </tr>
+                    @forelse($garages as $i => $garage)
+                        <tr>
+                            <td>{{ $i + 1 }}</td>
+                            <td>
+                                @php
+                                    $images = $garage->images ? json_decode($garage->images, true) : [];
+                                    $firstImage = !empty($images) ? $images[0] : null;
+                                @endphp
+                                @if($firstImage)
+                                    <img src="{{ asset('storage/' . $firstImage) }}" alt="Garage Image" style="width:48px;height:48px;object-fit:cover;border-radius:6px;">
+                                @else
+                                    <span style="color:#888;">No Image</span>
+                                @endif
+                            </td>
+                            <td>{{ $garage->rent ?? '-' }}</td>
+                            <td>{{ ucfirst($garage->parking_type) }}</td>
+                            <td>{{ ucfirst($garage->area) }}</td>
+                            <td>{{ $garage->camera ? 'Yes' : 'No' }}</td>
+                            <td>{{ $garage->guard ? 'Yes' : 'No' }}</td>
+                            <td>
+                                <a href="/booking-details/{{ $garage->garage_id }}">
+                                    <button class="details-button">Details</button>
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8" style="text-align:center;">No garages found.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

@@ -14,6 +14,34 @@
                 </div>
             </div>
         </div>
+        <h2 class="section-heading">Experience the Best Service Without Breaking the Bank</h2>
+        <div class="card-grid" style="margin-bottom:2.5rem;">
+            @foreach($featuredGarages as $garage)
+                <div class="card card-with-border" style="align-items:center;">
+                    <div class="card-image">
+                        @php
+                            $images = $garage->images ? json_decode($garage->images, true) : [];
+                            $firstImage = !empty($images) ? $images[0] : null;
+                        @endphp
+                        @if($firstImage)
+                            <img src="{{ asset('storage/' . $firstImage) }}" alt="Garage Image" style="width:100px;height:70px;object-fit:cover;border-radius:6px;">
+                        @else
+                            <svg class="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5V19a2 2 0 002 2h14a2 2 0 002-2v-2.5M16 3.13a4 4 0 010 7.75M12 7v6m0 0l-3-3m3 3l3-3" /></svg>
+                        @endif
+                    </div>
+                    <div class="card-content" style="text-align:center;">
+                        <div class="card-title" style="font-weight:700;">{{ $garage->area }}</div>
+                        <div><b>Place Type:</b> {{ ucfirst($garage->parking_type) }}</div>
+                        <div><b>CC Camera:</b> {{ $garage->camera ? 'Available' : 'Not Available' }}</div>
+                        <div><b>Guard:</b> {{ $garage->guard ? 'Available' : 'Not Available' }}</div>
+                        <div><b>Rent:</b> {{ $garage->rent }}tk (Per Hour)</div>
+                    </div>
+                    <a href="/booking-details/{{ $garage->garage_id }}" style="margin-top:1rem;display:inline-block;">
+                        <button class="search-button">Book</button>
+                    </a>
+                </div>
+            @endforeach
+        </div>
         <h2 class="section-heading">Why Us?</h2>
         <div class="card-grid">
             <div class="card card-with-border">
