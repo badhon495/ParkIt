@@ -180,9 +180,6 @@ class BookingDetailsController extends Controller
             'camera' => 'required|in:0,1',
             'guard' => 'required|in:0,1',
             'indoor' => 'required|in:indoor,outdoor',
-            'bike_slot' => 'nullable|integer',
-            'car_slot' => 'nullable|integer',
-            'bicycle_slot' => 'nullable|integer',
             'slots' => 'required|array',
             'nid' => 'required|string',
             'utility_bill' => 'required|string',
@@ -195,8 +192,7 @@ class BookingDetailsController extends Controller
             'parking_type' => 'required|string',
         ]);
         $data = $request->only([
-            'area', 'division', 'location', 'camera', 'guard', 'indoor', 'bike_slot', 'car_slot', 'bicycle_slot',
-            'nid', 'utility_bill', 'passport', 'alt_name', 'alt_phone', 'payment_method', 'bank_details', 'rent', 'parking_type'
+            'area', 'division', 'location', 'camera', 'guard', 'indoor', 'slots', 'nid', 'utility_bill', 'passport', 'alt_name', 'alt_phone', 'payment_method', 'bank_details', 'rent', 'parking_type'
         ]);
         $data['slots'] = json_encode($request->input('slots', []));
         DB::table('parking_details')->where('garage_id', $garage_id)->update($data);

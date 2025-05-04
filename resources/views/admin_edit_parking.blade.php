@@ -41,11 +41,6 @@
                     <option value="outdoor" {{ $garage->indoor == 'outdoor' ? 'selected' : '' }}>Outdoor</option>
                 </select>
             </div>
-            <div style="display:flex;gap:1rem;">
-                <input type="number" name="bike_slot" placeholder="Bike Slot" value="{{ $garage->bike_slot }}">
-                <input type="number" name="car_slot" placeholder="Car Slot" value="{{ $garage->car_slot }}">
-                <input type="number" name="bicycle_slot" placeholder="Bicycle Slot" value="{{ $garage->bicycle_slot }}">
-            </div>
             <!-- Time Slots Multi-Select -->
             <div style="display:flex;flex-direction:column;gap:0.3rem;">
                 <label for="slots">Available Time Slots <span style="color:red;">*</span></label>

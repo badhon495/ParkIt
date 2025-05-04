@@ -20,13 +20,7 @@ class FindParkingController extends Controller
         }
         // Vehicle type (car, bike, bicycle)
         if ($request->filled('vehicle')) {
-            if ($request->vehicle === 'car') {
-                $query->where('car_slot', '>', 0);
-            } elseif ($request->vehicle === 'bike') {
-                $query->where('bike_slot', '>', 0);
-            } elseif ($request->vehicle === 'bicycle') {
-                $query->where('bicycle_slot', '>', 0);
-            }
+            // Removed car_slot, bike_slot, bicycle_slot logic
         }
         // Price range
         if ($request->filled('price_range')) {

@@ -78,20 +78,6 @@
                     </select>
                 </div>
             </div>
-            <div style="display:flex;gap:1rem;">
-                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
-                    <label for="bike_slot">Bike Slot</label>
-                    <input type="number" name="bike_slot" id="bike_slot" placeholder="Ex - 5" value="{{ old('bike_slot', $garage->bike_slot) }}">
-                </div>
-                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
-                    <label for="car_slot">Car Slot</label>
-                    <input type="number" name="car_slot" id="car_slot" placeholder="Ex - 2" value="{{ old('car_slot', $garage->car_slot) }}">
-                </div>
-                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
-                    <label for="bicycle_slot">Bicycle Slot</label>
-                    <input type="number" name="bicycle_slot" id="bicycle_slot" placeholder="Ex - 3" value="{{ old('bicycle_slot', $garage->bicycle_slot) }}">
-                </div>
-            </div>
             <!-- Time Slots Multi-Select -->
             <div style="display:flex;flex-direction:column;gap:0.3rem;">
                 <label for="slots">Available Time Slots <span style="color:red;">*</span></label>

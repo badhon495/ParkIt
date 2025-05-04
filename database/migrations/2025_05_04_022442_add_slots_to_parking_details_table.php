@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('parking_details', function (Blueprint $table) {
-            $table->json('slots')->after('bicycle_slot');
+            $table->json('slots')->after('indoor'); // changed from after('bicycle_slot')
         });
     }
 

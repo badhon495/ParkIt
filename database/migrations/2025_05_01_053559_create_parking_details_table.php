@@ -23,9 +23,6 @@ return new class extends Migration
             $table->boolean('guard')->nullable();
             $table->string('indoor', 20)->nullable();
             $table->unsignedBigInteger('usr_id')->nullable();
-            $table->integer('bike_slot')->nullable();
-            $table->integer('car_slot')->nullable();
-            $table->integer('bicycle_slot')->nullable();
             $table->string('start_time', 10)->nullable();
             $table->string('end_time', 10)->nullable();
             $table->text('nid')->nullable();

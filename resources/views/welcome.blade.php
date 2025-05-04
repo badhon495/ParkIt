@@ -25,7 +25,7 @@
                 </div>
             </div>
             <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:3;">
-                <span class="hero-dot" style="width:12px;height:12px;border-radius:50%;background:#fff;opacity:0.7;cursor:pointer;"></span>
+                <span class="hero-dot" style="width:12px;height:12px;border-radius:50%;background:#000;opacity:0.7;cursor:pointer;"></span>
                 <span class="hero-dot" style="width:12px;height:12px;border-radius:50%;background:#fff;opacity:0.4;cursor:pointer;"></span>
             </div>
         </div>
@@ -40,6 +40,7 @@
                     slide.style.zIndex = (i === idx) ? '2' : '1';
                 });
                 dots.forEach(function(dot, i) {
+                    dot.style.background = (i === idx) ? '#000' : '#fff';
                     dot.style.opacity = (i === idx) ? '0.7' : '0.4';
                 });
                 current = idx;
