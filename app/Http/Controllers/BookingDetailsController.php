@@ -20,7 +20,7 @@ class BookingDetailsController extends Controller
         // Get all booked slots for this garage
         $bookedSlots = DB::table('bookings')
             ->where('garage_id', $garage_id)
-            ->select('start_time', 'end_time', 'booking_date')
+            ->select('booked_slots', 'booking_date')
             ->get();
         return view('booking_details', compact('garage', 'owner', 'bookedSlots'));
     }
@@ -31,32 +31,28 @@ class BookingDetailsController extends Controller
         $garage = DB::table('parking_details')->where('garage_id', $garage_id)->first();
         if (!$garage) abort(404);
 
-        // Check for overlapping bookings
         $booking_date = $request->input('booking_date');
-        $start_time = $request->input('start_time');
-        $end_time = $request->input('end_time');
-        $overlap = DB::table('bookings')
+        $selectedSlots = $request->input('booking_slots', []);
+        // Check for overlapping slots on the same date
+        $existingBookings = DB::table('bookings')
             ->where('garage_id', $garage_id)
             ->where('booking_date', $booking_date)
-            ->where(function($q) use ($start_time, $end_time) {
-                $q->where(function($q2) use ($start_time, $end_time) {
-                    $q2->where('start_time', '<', $end_time)
-                        ->where('end_time', '>', $start_time);
-                });
-            })
-            ->exists();
-        if ($overlap) {
-            return redirect()->back()->withInput()->withErrors(['booking_date' => 'This garage is already booked for the selected date and time slot. Please choose a different time.']);
+            ->pluck('booked_slots');
+        $alreadyBooked = [];
+        foreach ($existingBookings as $json) {
+            $arr = json_decode($json, true);
+            if (is_array($arr)) {
+                $alreadyBooked = array_merge($alreadyBooked, $arr);
+            }
+        }
+        // Only allow booking for slots that are not already booked
+        $conflictSlots = array_intersect($selectedSlots, $alreadyBooked);
+        if (count($conflictSlots) > 0) {
+            return redirect()->back()->withInput()->withErrors(['booking_slots' => 'One or more selected slots are already booked for this date. Please choose different slots.']);
         }
 
-        $garage = DB::table('parking_details')->where('garage_id', $garage_id)->first();
-        if (!$garage) abort(404);
-        $owner = DB::table('users')->where('id', $garage->usr_id)->first();
-
-        $start = strtotime($request->input('start_time'));
-        $end = strtotime($request->input('end_time'));
-        $hours = max(1, ceil(($end - $start) / 3600));
-        $total_rent = $garage->rent * $hours;
+        $total_rent = $garage->rent * count($selectedSlots);
+        $trxn = $request->input('trxn');
 
         $booking_id = DB::table('bookings')->insertGetId([
             'garage_id' => $garage_id,
@@ -65,18 +61,23 @@ class BookingDetailsController extends Controller
             'driver_phone' => $request->input('driver_phone'),
             'owner_name' => session('user_name'),
             'owner_phone' => session('user_phone'),
-            'start_time' => $request->input('start_time'),
-            'end_time' => $request->input('end_time'),
+            'booked_slots' => json_encode($selectedSlots),
             'vehicle_type' => $request->input('vehicle_type'),
             'vehicle_details' => $request->input('vehicle_details'),
+            'total_cost' => $total_rent,
+            'trxn' => $trxn ?? '',
             'booking_date' => $request->input('booking_date'),
-            'tranx_id' => null,
         ], 'booking_id');
         return redirect()->route('order-confirmation', ['booking_id' => $booking_id]);
     }
 
-    public function confirmation($booking_id)
+    public function confirmation(Request $request, $booking_id)
     {
+        if ($request->isMethod('post')) {
+            $trxn = $request->input('trxn');
+            DB::table('bookings')->where('booking_id', $booking_id)->update(['trxn' => $trxn]);
+            return redirect()->route('previous-parking')->with('success', 'Transaction ID saved and order confirmed!');
+        }
         $booking = DB::table('bookings')->where('booking_id', $booking_id)->first();
         $garage = $booking ? DB::table('parking_details')->where('garage_id', $booking->garage_id)->first() : null;
         return view('order_confirmation', compact('booking', 'garage'));
@@ -87,7 +88,17 @@ class BookingDetailsController extends Controller
         $bookings = DB::table('bookings')
             ->where('user_id', $userId)
             ->join('parking_details', 'bookings.garage_id', '=', 'parking_details.garage_id')
-            ->select('bookings.*', 'parking_details.area', 'parking_details.division', 'parking_details.rent', 'parking_details.parking_type', 'parking_details.location')
+            ->join('users', 'parking_details.usr_id', '=', 'users.id')
+            ->select(
+                'bookings.*',
+                'parking_details.area',
+                'parking_details.division',
+                'parking_details.rent',
+                'parking_details.parking_type',
+                'parking_details.location',
+                'users.email as owner_email',
+                'users.phone as owner_phone'
+            )
             ->orderByDesc('bookings.created_at')
             ->get();
         return view('previous_parking', compact('bookings'));
@@ -108,7 +119,7 @@ class BookingDetailsController extends Controller
     public function adminEditBooking(Request $request, $booking_id) {
         if (session('user_type') !== 'admin') abort(403, 'Unauthorized');
         $fields = [
-            'driver_name', 'driver_phone', 'owner_name', 'owner_phone', 'start_time', 'end_time', 'vehicle_type', 'vehicle_details', 'tranx_id'
+            'driver_name', 'driver_phone', 'owner_name', 'owner_phone', 'vehicle_type', 'vehicle_details', 'tranx_id'
         ];
         $data = $request->only($fields);
         DB::table('bookings')->where('booking_id', $booking_id)->update($data);
@@ -162,11 +173,32 @@ class BookingDetailsController extends Controller
     public function adminEditParkingUpdate(Request $request, $garage_id)
     {
         if (session('user_type') !== 'admin') abort(403, 'Unauthorized');
-        $fields = [
+        $validated = $request->validate([
+            'area' => 'required|string|max:100',
+            'division' => 'required|string|max:100',
+            'location' => 'required|string',
+            'camera' => 'required|in:0,1',
+            'guard' => 'required|in:0,1',
+            'indoor' => 'required|in:indoor,outdoor',
+            'bike_slot' => 'nullable|integer',
+            'car_slot' => 'nullable|integer',
+            'bicycle_slot' => 'nullable|integer',
+            'slots' => 'required|array',
+            'nid' => 'required|string',
+            'utility_bill' => 'required|string',
+            'passport' => 'nullable|string',
+            'alt_name' => 'nullable|string',
+            'alt_phone' => 'nullable|string',
+            'payment_method' => 'required|string',
+            'bank_details' => 'nullable|string',
+            'rent' => 'required|numeric|min:0',
+            'parking_type' => 'required|string',
+        ]);
+        $data = $request->only([
             'area', 'division', 'location', 'camera', 'guard', 'indoor', 'bike_slot', 'car_slot', 'bicycle_slot',
-            'start_time', 'end_time', 'nid', 'utility_bill', 'passport', 'alt_name', 'alt_phone', 'payment_method', 'bank_details', 'rent', 'parking_type'
-        ];
-        $data = $request->only($fields);
+            'nid', 'utility_bill', 'passport', 'alt_name', 'alt_phone', 'payment_method', 'bank_details', 'rent', 'parking_type'
+        ]);
+        $data['slots'] = json_encode($request->input('slots', []));
         DB::table('parking_details')->where('garage_id', $garage_id)->update($data);
         return redirect()->route('admin.edit-parking', $garage_id)->with('success', 'Garage updated successfully!');
     }
@@ -196,10 +228,8 @@ class BookingDetailsController extends Controller
         // Calculate total earnings
         $totalEarnings = 0;
         foreach ($bookings as $booking) {
-            $start = strtotime($booking->start_time);
-            $end = strtotime($booking->end_time);
-            $hours = max(1, ceil(($end - $start) / 3600));
-            $totalEarnings += $booking->rent * $hours;
+            $slotsArr = isset($booking->booked_slots) ? json_decode($booking->booked_slots, true) : [];
+            $totalEarnings += $booking->rent * count($slotsArr);
         }
         return view('owner_dashboard', compact('garages', 'bookings', 'totalEarnings'));
     }

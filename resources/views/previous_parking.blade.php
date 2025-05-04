@@ -13,20 +13,20 @@
                     <th style="padding:8px;">Location</th>
                     <th style="padding:8px;">Type</th>
                     <th style="padding:8px;">Rent/hr</th>
-                    <th style="padding:8px;">Start</th>
-                    <th style="padding:8px;">End</th>
+                    <th style="padding:8px;">Slots</th>
                     <th style="padding:8px;">Vehicle</th>
                     <th style="padding:8px;">Driver</th>
                     <th style="padding:8px;">Total Amount</th>
+                    <th style="padding:8px;">Owner Email</th>
+                    <th style="padding:8px;">Owner Phone</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($bookings as $i => $booking)
                     @php
-                        $start = strtotime($booking->start_time);
-                        $end = strtotime($booking->end_time);
-                        $hours = max(1, ceil(($end - $start) / 3600));
-                        $total_rent = ($booking->rent ?? 0) * $hours;
+                        $slots = json_decode($booking->booked_slots ?? '[]', true);
+                        $slotLabels = collect($slots)->map(fn($s) => sprintf('%02d:00-%02d:00', $s, ($s+1)%24));
+                        $total_rent = ($booking->rent ?? 0) * (is_array($slots) ? count($slots) : 0);
                     @endphp
                     <tr>
                         <td style="padding:8px;">{{ $i+1 }}</td>
@@ -35,14 +35,15 @@
                         <td style="padding:8px;">{{ $booking->location }}</td>
                         <td style="padding:8px;">{{ ucfirst($booking->parking_type) }}</td>
                         <td style="padding:8px;">{{ $booking->rent }}</td>
-                        <td style="padding:8px;">{{ $booking->start_time }}</td>
-                        <td style="padding:8px;">{{ $booking->end_time }}</td>
+                        <td style="padding:8px;">{{ $slotLabels->implode(', ') }}</td>
                         <td style="padding:8px;">{{ $booking->vehicle_type }}</td>
                         <td style="padding:8px;">{{ $booking->driver_name }}</td>
                         <td style="padding:8px;">{{ $total_rent }}</td>
+                        <td style="padding:8px;">{{ $booking->owner_email }}</td>
+                        <td style="padding:8px;">{{ $booking->owner_phone }}</td>
                     </tr>
                 @empty
-                    <tr><td colspan="11" style="text-align:center;">No previous bookings found.</td></tr>
+                    <tr><td colspan="12" style="text-align:center;">No previous bookings found.</td></tr>
                 @endforelse
             </tbody>
         </table>

@@ -92,15 +92,23 @@
                     <input type="number" name="bicycle_slot" id="bicycle_slot" placeholder="Ex - 3" value="{{ old('bicycle_slot', $garage->bicycle_slot) }}">
                 </div>
             </div>
-            <div style="display:flex;gap:1rem;">
-                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
-                    <label for="start_time">Start Time</label>
-                    <input type="text" name="start_time" id="start_time" required placeholder="Ex - 08:00" value="{{ old('start_time', $garage->start_time) }}">
+            <!-- Time Slots Multi-Select -->
+            <div style="display:flex;flex-direction:column;gap:0.3rem;">
+                <label for="slots">Available Time Slots <span style="color:red;">*</span></label>
+                <div id="slots" style="display:flex;flex-wrap:wrap;gap:0.5rem 1.5rem;">
+                    @php
+                        $selectedSlots = old('slots', isset($garage->slots) ? json_decode($garage->slots, true) : []);
+                    @endphp
+                    @for ($i = 0; $i < 24; $i++)
+                        <div style="min-width:120px;">
+                            <input type="checkbox" name="slots[]" id="slot_{{ $i }}" value="{{ $i }}" {{ is_array($selectedSlots) && in_array($i, $selectedSlots) ? 'checked' : '' }}>
+                            <label for="slot_{{ $i }}">
+                                {{ sprintf('%02d:00', $i) }} - {{ sprintf('%02d:00', ($i+1)%24) }}
+                            </label>
+                        </div>
+                    @endfor
                 </div>
-                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
-                    <label for="end_time">End Time</label>
-                    <input type="text" name="end_time" id="end_time" required placeholder="Ex - 22:00" value="{{ old('end_time', $garage->end_time) }}">
-                </div>
+                <small style="color:#888;">Select all one-hour slots when your garage is available for booking. (e.g., 08:00-09:00 means slot 8)</small>
             </div>
             <div style="display:flex;flex-direction:column;gap:0.3rem;">
                 <label for="place_type">Place Type</label>
@@ -128,6 +136,7 @@
                 <label for="rent">Rent (required)</label>
                 <input type="number" name="rent" id="rent" placeholder="Ex - 200" required min="0" step="0.01" value="{{ old('rent', $garage->rent) }}">
             </div>
+
             <div style="display:flex;gap:1rem;align-items:center;">
                 <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
                     <label for="nid_photo">Upload Photo of NID</label>
@@ -170,8 +179,50 @@
                     <input type="text" name="alternate_person_phone" id="alternate_person_phone" placeholder="Ex - 018XXXXXXXX" value="{{ old('alternate_person_phone', $garage->alt_phone) }}">
                 </div>
             </div>
+            <!-- Photos Button and Modal -->
+            <div style="text-align:center; margin-top:1rem;">
+                <button type="button" id="openPhotosModal" style="background:#3498db;color:#fff;padding:0.5rem 1.2rem;border:none;border-radius:3px;font-size:1rem;font-weight:600;min-width:120px;cursor:pointer;">Photos</button>
+            </div>
             <button type="submit" style="background:#444;color:#fff;padding:0.5rem 0;border:none;border-radius:3px;font-size:1rem;font-weight:600;">Update</button>
         </form>
+        <!-- Modal -->
+        <div id="photosModal" style="display:none;position:fixed;z-index:1000;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.35);align-items:center;justify-content:center;">
+            <div style="background:#fff;padding:2rem 2.5rem;border-radius:0.5rem;max-width:600px;width:95vw;max-height:90vh;overflow-y:auto;position:relative;">
+                <button type="button" id="closePhotosModal" style="position:absolute;top:10px;right:10px;background:#e74c3c;color:#fff;border:none;border-radius:50%;width:32px;height:32px;font-size:1.2rem;">&times;</button>
+                <h3 style="margin-bottom:1.2rem;text-align:center;">Garage Photos</h3>
+                <form method="POST" action="/edit-parking/{{ $garage->garage_id }}/remove-images" id="deletePhotosForm">
+                    @csrf
+                    <div style="display:flex;flex-wrap:wrap;gap:1.5rem;justify-content:center;">
+                        @php
+                            $images = $garage->images ? json_decode($garage->images, true) : [];
+                        @endphp
+                        @forelse($images as $img)
+                            <div style="display:flex;flex-direction:column;align-items:center;gap:0.5rem;">
+                                <img src="{{ asset('storage/' . $img) }}" alt="Garage Image" style="width:110px;height:110px;object-fit:cover;border-radius:6px;border:1px solid #ccc;">
+                                <input type="checkbox" name="images[]" value="{{ $img }}">
+                            </div>
+                        @empty
+                            <div style="color:#888;">No images uploaded.</div>
+                        @endforelse
+                    </div>
+                    <div style="margin-top:1.5rem;text-align:center;">
+                        <button type="submit" style="background:#e74c3c;color:#fff;padding:0.5rem 1.5rem;border:none;border-radius:3px;font-size:1rem;font-weight:600;">Delete Selected</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script>
+            document.getElementById('openPhotosModal').onclick = function() {
+                document.getElementById('photosModal').style.display = 'flex';
+            };
+            document.getElementById('closePhotosModal').onclick = function() {
+                document.getElementById('photosModal').style.display = 'none';
+            };
+            // Close modal on outside click
+            document.getElementById('photosModal').onclick = function(e) {
+                if (e.target === this) this.style.display = 'none';
+            };
+        </script>
         <div style="text-align:center;margin-top:2.5rem;">
             <h3>Questions about garage update?</h3>
             <p>Call 01533024242</p>

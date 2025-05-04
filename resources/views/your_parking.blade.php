@@ -24,8 +24,7 @@
                         <th>Area</th>
                         <th>CC Camera</th>
                         <th>Guard</th>
-                        <th>Start Time</th>
-                        <th>End Time</th>
+                        <th>Slots</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -49,8 +48,21 @@
                             <td>{{ ucfirst($garage->area) }}</td>
                             <td>{{ $garage->camera ? 'Yes' : 'No' }}</td>
                             <td>{{ $garage->guard ? 'Yes' : 'No' }}</td>
-                            <td>{{ $garage->start_time }}</td>
-                            <td>{{ $garage->end_time }}</td>
+                            <td>
+                                @php
+                                    $slots = isset($garage->slots) ? json_decode($garage->slots, true) : [];
+                                    if (is_array($slots) && count($slots)) {
+                                        $slotLabels = collect($slots)->map(function($s) {
+                                            $start = str_pad($s, 2, '0', STR_PAD_LEFT) . ':00';
+                                            $end = str_pad(($s+1)%24, 2, '0', STR_PAD_LEFT) . ':00';
+                                            return $start . ' - ' . $end;
+                                        });
+                                        echo implode(', ', $slotLabels->toArray());
+                                    } else {
+                                        echo '-';
+                                    }
+                                @endphp
+                            </td>
                             <td>
                                 <a href="/edit-parking/{{ $garage->garage_id }}" class="details-button" style="margin-left:8px;">Edit</a>
                             </td>

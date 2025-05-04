@@ -17,8 +17,6 @@
                         <th style="padding:10px;">Garage ID</th>
                         <th style="padding:10px;">User Name</th>
                         <th style="padding:10px;">User Phone</th>
-                        <th style="padding:10px;">Start Time</th>
-                        <th style="padding:10px;">End Time</th>
                         <th style="padding:10px;">Vehicle Type</th>
                         <th style="padding:10px;">Amount (৳)</th>
                     </tr>
@@ -30,21 +28,17 @@
                             <td style="padding:10px;">{{ $booking->garage_id }}</td>
                             <td style="padding:10px;">{{ $booking->user_name }}</td>
                             <td style="padding:10px;">{{ $booking->user_phone }}</td>
-                            <td style="padding:10px;">{{ $booking->start_time }}</td>
-                            <td style="padding:10px;">{{ $booking->end_time }}</td>
                             <td style="padding:10px;">{{ ucfirst($booking->vehicle_type) }}</td>
                             <td style="padding:10px;">
                                 @php
-                                    $start = strtotime($booking->start_time);
-                                    $end = strtotime($booking->end_time);
-                                    $hours = max(1, ceil(($end - $start) / 3600));
-                                    $amount = $booking->rent * $hours;
+                                    $slotsArr = isset($booking->booked_slots) ? json_decode($booking->booked_slots, true) : [];
+                                    $amount = $booking->rent * count($slotsArr);
                                 @endphp
                                 {{ number_format($amount, 2) }}
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="8" style="text-align:center;padding:20px;">No bookings found.</td></tr>
+                        <tr><td colspan="6" style="text-align:center;padding:20px;">No bookings found.</td></tr>
                     @endforelse
                 </tbody>
             </table>

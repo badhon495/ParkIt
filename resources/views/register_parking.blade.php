@@ -99,15 +99,20 @@
                     <input type="number" id="bicycle_slot" name="bicycle_slot" placeholder="Ex - 3">
                 </div>
             </div>
-            <div style="display:flex;gap:1rem;">
-                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
-                    <label for="start_time">Start Time</label>
-                    <input type="text" id="start_time" name="start_time" required placeholder="Ex - 08:00">
+            <!-- Time Slots Multi-Select -->
+            <div style="display:flex;flex-direction:column;gap:0.3rem;">
+                <label for="slots">Available Time Slots <span style="color:red;">*</span></label>
+                <div id="slots" style="display:flex;flex-wrap:wrap;gap:0.5rem 1.5rem;">
+                    @for ($i = 0; $i < 24; $i++)
+                        <div style="min-width:120px;">
+                            <input type="checkbox" name="slots[]" id="slot_{{ $i }}" value="{{ $i }}" {{ is_array(old('slots')) && in_array($i, old('slots', [])) ? 'checked' : '' }}>
+                            <label for="slot_{{ $i }}">
+                                {{ sprintf('%02d:00', $i) }} - {{ sprintf('%02d:00', ($i+1)%24) }}
+                            </label>
+                        </div>
+                    @endfor
                 </div>
-                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
-                    <label for="end_time">End Time</label>
-                    <input type="text" id="end_time" name="end_time" required placeholder="Ex - 22:00">
-                </div>
+                <small style="color:#888;">Select all one-hour slots when your garage is available for booking. (e.g., 08:00-09:00 means slot 8)</small>
             </div>
             <div style="display:flex;flex-direction:column;gap:0.3rem;">
                 <label for="place_type">Place Type</label>

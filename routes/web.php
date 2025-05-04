@@ -52,9 +52,12 @@ Route::get('/your-parking', [YourParkingController::class, 'index'])->name('your
 Route::get('/edit-parking/{garage_id}', [EditParkingController::class, 'edit'])->name('edit-parking');
 Route::post('/edit-parking/{garage_id}', [EditParkingController::class, 'update'])->name('update-parking');
 
+// Route to handle deleting selected images from a garage
+Route::post('/edit-parking/{garage_id}/remove-images', [App\Http\Controllers\EditParkingController::class, 'removeImages'])->name('edit-parking.remove-images');
+
 Route::get('/booking-details/{garage_id}', [BookingDetailsController::class, 'show'])->name('booking-details');
 Route::post('/booking-details/{garage_id}', [BookingDetailsController::class, 'store'])->name('booking-details.store');
-Route::get('/order-confirmation/{booking_id}', [BookingDetailsController::class, 'confirmation'])->name('order-confirmation');
+Route::match(['get', 'post'], '/order-confirmation/{booking_id}', [BookingDetailsController::class, 'confirmation'])->name('order-confirmation');
 
 Route::get('/previous-parking', [BookingDetailsController::class, 'previous'])->name('previous-parking');
 

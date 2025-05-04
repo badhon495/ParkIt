@@ -46,15 +46,23 @@
                 <input type="number" name="car_slot" placeholder="Car Slot" value="{{ $garage->car_slot }}">
                 <input type="number" name="bicycle_slot" placeholder="Bicycle Slot" value="{{ $garage->bicycle_slot }}">
             </div>
-            <div style="display:flex;gap:1rem;">
-                <label style="flex:1;">
-                    Start Time
-                    <input type="text" name="start_time" required style="width:100%;" value="{{ $garage->start_time }}">
-                </label>
-                <label style="flex:1;">
-                    End Time
-                    <input type="text" name="end_time" required style="width:100%;" value="{{ $garage->end_time }}">
-                </label>
+            <!-- Time Slots Multi-Select -->
+            <div style="display:flex;flex-direction:column;gap:0.3rem;">
+                <label for="slots">Available Time Slots <span style="color:red;">*</span></label>
+                <div id="slots" style="display:flex;flex-wrap:wrap;gap:0.5rem 1.5rem;">
+                    @php
+                        $selectedSlots = old('slots', isset($garage->slots) ? json_decode($garage->slots, true) : []);
+                    @endphp
+                    @for ($i = 0; $i < 24; $i++)
+                        <div style="min-width:120px;">
+                            <input type="checkbox" name="slots[]" id="slot_{{ $i }}" value="{{ $i }}" {{ is_array($selectedSlots) && in_array($i, $selectedSlots) ? 'checked' : '' }}>
+                            <label for="slot_{{ $i }}">
+                                {{ sprintf('%02d:00', $i) }} - {{ sprintf('%02d:00', ($i+1)%24) }}
+                            </label>
+                        </div>
+                    @endfor
+                </div>
+                <small style="color:#888;">Select all one-hour slots when this garage is available for booking. (e.g., 08:00-09:00 means slot 8)</small>
             </div>
             <select name="parking_type" required>
                 <option value="">Place Type</option>

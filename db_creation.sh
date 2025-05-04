@@ -25,7 +25,7 @@ echo "Creating tables in $DB_NAME..."
 
 psql -U $DB_USER -h $DB_HOST -p $DB_PORT -d $DB_NAME <<EOF
 
-CREATE TABLE usr_user (
+CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
     type VARCHAR(10) NOT NULL CHECK (type IN ('user', 'owner', 'admin')),
@@ -44,12 +44,11 @@ CREATE TABLE parking_details (
     location TEXT NOT NULL,
     camera BOOLEAN,
     guard BOOLEAN,
-    usr_id INTEGER REFERENCES usr_user(user_id),
+    usr_id INTEGER REFERENCES users(user_id),
     bike_slot INTEGER,
     car_slot INTEGER,
     bicycle_slot INTEGER,
-    start_time TIMESTAMP,
-    end_time TIMESTAMP,
+    slots JSON NOT NULL,
     nid TEXT,
     utility_bill TEXT,
     passport TEXT,
@@ -60,13 +59,12 @@ CREATE TABLE parking_details (
 CREATE TABLE bookings (
     booking_id SERIAL PRIMARY KEY,
     garage_id INTEGER REFERENCES parking_details(garage_id),
-    user_id INTEGER REFERENCES usr_user(user_id),
+    user_id INTEGER REFERENCES users(user_id),
     driver_name TEXT,
     driver_phone TEXT,
     owner_name TEXT,
     owner_phone TEXT,
-    start_time TIMESTAMP,
-    end_time TIMESTAMP,
+    booked_slots JSON NOT NULL,
     vehicle_type VARCHAR(50),
     vehicle_details TEXT,
     total_cost NUMERIC NOT NULL,

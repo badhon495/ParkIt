@@ -12,7 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('bookings', function (Blueprint $table) {
-            $table->date('booking_date')->after('vehicle_details')->nullable(false);
+            $table->dropColumn(['start_time', 'end_time']);
+            if (!Schema::hasColumn('bookings', 'booking_date')) {
+                $table->date('booking_date')->nullable(false)->after('trxn');
+            }
+            if (!Schema::hasColumn('bookings', 'booked_slots')) {
+                $table->json('booked_slots')->after('vehicle_details')->nullable(false);
+            }
         });
     }
 
@@ -22,7 +28,16 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('bookings', function (Blueprint $table) {
-            $table->dropColumn('booking_date');
+            if (Schema::hasColumn('bookings', 'booked_slots')) {
+                $table->dropColumn('booked_slots');
+            }
+            if (!Schema::hasColumn('bookings', 'start_time')) {
+                $table->string('start_time')->nullable();
+            }
+            if (!Schema::hasColumn('bookings', 'end_time')) {
+                $table->string('end_time')->nullable();
+            }
+            // Do not drop booking_date here
         });
     }
 };

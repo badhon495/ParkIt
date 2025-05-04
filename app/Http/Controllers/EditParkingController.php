@@ -42,8 +42,7 @@ class EditParkingController extends Controller
             'bike_slot' => 'nullable|integer',
             'car_slot' => 'nullable|integer',
             'bicycle_slot' => 'nullable|integer',
-            'start_time' => 'required|string',
-            'end_time' => 'required|string',
+            'slots' => 'required|array',
             'place_type' => 'required|string',
             'nid' => 'required|string',
             'customer_id' => 'required|string',
@@ -54,6 +53,17 @@ class EditParkingController extends Controller
             'alternate_person_phone' => 'nullable|string',
             'rent' => 'required|numeric|min:0',
         ]);
+
+        // Handle new garage photo uploads
+        $garagePhotoPaths = $garage->images ? json_decode($garage->images, true) : [];
+        if ($request->hasFile('garage_photos')) {
+            foreach ($request->file('garage_photos') as $photo) {
+                if ($photo && $photo->isValid()) {
+                    $garagePhotoPaths[] = $photo->store('uploads/garage_photos', 'public');
+                }
+            }
+        }
+
         DB::table('parking_details')->where('garage_id', $garage_id)->update([
             'rent' => $request->input('rent'),
             'parking_type' => $request->input('place_type'),
@@ -65,8 +75,7 @@ class EditParkingController extends Controller
             'bike_slot' => $request->input('bike_slot'),
             'car_slot' => $request->input('car_slot'),
             'bicycle_slot' => $request->input('bicycle_slot'),
-            'start_time' => $request->input('start_time'),
-            'end_time' => $request->input('end_time'),
+            'slots' => json_encode($request->input('slots', [])),
             'nid' => $request->input('nid'),
             'utility_bill' => $request->input('customer_id'),
             'passport' => $request->input('passport'),
@@ -75,7 +84,35 @@ class EditParkingController extends Controller
             'payment_method' => $request->input('payment_method'),
             'bank_details' => $request->input('bank_details'),
             'indoor' => $request->input('indoor'),
+            'images' => $garagePhotoPaths ? json_encode($garagePhotoPaths) : null,
         ]);
+
         return redirect('/your-parking')->with('success', 'Garage details updated successfully!');
+    }
+
+    public function removeImages(Request $request, $garage_id)
+    {
+        $userId = session('user_id');
+        $garage = DB::table('parking_details')->where('garage_id', $garage_id)->where('usr_id', $userId)->first();
+        if (!$garage) {
+            return redirect()->back()->with('error', 'Garage not found or access denied.');
+        }
+        $selectedImages = $request->input('images', []);
+        if (empty($selectedImages)) {
+            return redirect()->back()->with('error', 'No images selected.');
+        }
+        $images = $garage->images ? json_decode($garage->images, true) : [];
+        $remainingImages = array_values(array_diff($images, $selectedImages));
+        // Optionally delete files from storage
+        foreach ($selectedImages as $img) {
+            $imgPath = storage_path('app/public/' . $img);
+            if (file_exists($imgPath)) {
+                @unlink($imgPath);
+            }
+        }
+        DB::table('parking_details')->where('garage_id', $garage_id)->update([
+            'images' => json_encode($remainingImages)
+        ]);
+        return redirect()->back()->with('success', 'Selected images deleted successfully.');
     }
 }
