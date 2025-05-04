@@ -14,7 +14,7 @@
 </head>
 <body>
     <header>
-        <div class="logo">ParkIt</div>
+        <div class="logo"><a href="/" style="color:inherit;text-decoration:none;">ParkIt</a></div>
         <nav>
             @if(!session('user_name'))
                 {{-- Guest Navbar --}}

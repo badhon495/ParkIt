@@ -17,12 +17,38 @@ class BookingDetailsController extends Controller
             abort(404);
         }
         $owner = DB::table('users')->where('id', $garage->usr_id)->first();
-        return view('booking_details', compact('garage', 'owner'));
+        // Get all booked slots for this garage
+        $bookedSlots = DB::table('bookings')
+            ->where('garage_id', $garage_id)
+            ->select('start_time', 'end_time', 'booking_date')
+            ->get();
+        return view('booking_details', compact('garage', 'owner', 'bookedSlots'));
     }
 
     public function store(Request $request, $garage_id)
     {
         $userId = session('user_id');
+        $garage = DB::table('parking_details')->where('garage_id', $garage_id)->first();
+        if (!$garage) abort(404);
+
+        // Check for overlapping bookings
+        $booking_date = $request->input('booking_date');
+        $start_time = $request->input('start_time');
+        $end_time = $request->input('end_time');
+        $overlap = DB::table('bookings')
+            ->where('garage_id', $garage_id)
+            ->where('booking_date', $booking_date)
+            ->where(function($q) use ($start_time, $end_time) {
+                $q->where(function($q2) use ($start_time, $end_time) {
+                    $q2->where('start_time', '<', $end_time)
+                        ->where('end_time', '>', $start_time);
+                });
+            })
+            ->exists();
+        if ($overlap) {
+            return redirect()->back()->withInput()->withErrors(['booking_date' => 'This garage is already booked for the selected date and time slot. Please choose a different time.']);
+        }
+
         $garage = DB::table('parking_details')->where('garage_id', $garage_id)->first();
         if (!$garage) abort(404);
         $owner = DB::table('users')->where('id', $garage->usr_id)->first();
@@ -43,6 +69,7 @@ class BookingDetailsController extends Controller
             'end_time' => $request->input('end_time'),
             'vehicle_type' => $request->input('vehicle_type'),
             'vehicle_details' => $request->input('vehicle_details'),
+            'booking_date' => $request->input('booking_date'),
             'tranx_id' => null,
         ], 'booking_id');
         return redirect()->route('order-confirmation', ['booking_id' => $booking_id]);

@@ -36,6 +36,10 @@ class FindParkingController extends Controller
                 $query->whereBetween('rent', [200, 300]);
             } elseif ($request->price_range == 3) {
                 $query->whereBetween('rent', [300, 400]);
+            } elseif ($request->price_range == 4) {
+                $query->where('rent', '<', 100);
+            } elseif ($request->price_range == 5) {
+                $query->where('rent', '>', 500);
             }
         }
         // Duration (not implemented in DB, skip or implement if you have logic)

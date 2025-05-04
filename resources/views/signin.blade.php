@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Sign In | ParkIt')
 @section('content')
-<div style="min-height:60vh;display:flex;align-items:center;justify-content:center;">
+<div style="min-height:calc(100vh - 120px);display:flex;align-items:center;justify-content:center;">
     <div style="display:flex;flex:1;max-width:1100px;width:100%;gap:2rem;">
         <div style="flex:1;display:flex;align-items:center;justify-content:center;">
             <h1 style="font-size:2.8rem;font-weight:700;color:#555;line-height:1.1;text-align:center;">Welcome Back.<br>Find Your Garage Here</h1>

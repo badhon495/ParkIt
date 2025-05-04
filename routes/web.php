@@ -17,7 +17,7 @@ Route::get('/', function () {
     if (session('user_type') === 'admin') {
         return redirect()->route('admin.bookings');
     } elseif (session('user_type') === 'owner') {
-        return redirect('/your-parking');
+        return redirect('owner/dashboard');
     }
     // Otherwise, show homepage for guests
     $featuredGarages = DB::table('parking_details')->orderByDesc('garage_id')->limit(3)->get();

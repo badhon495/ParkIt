@@ -22,93 +22,160 @@
         @endif
         <form method="POST" action="/register-parking" enctype="multipart/form-data" style="display:flex;flex-direction:column;gap:1.5rem;" id="registerParkingForm">
             @csrf
-            <input type="text" name="owner_name" placeholder="Owner Name" required value="{{ old('owner_name', $user['name']) }}">
             <div style="display:flex;gap:1rem;">
-                <input type="text" name="phone" placeholder="Phone Number" required style="flex:1;" value="{{ old('phone', $user['phone']) }}">
-                <input type="email" name="email" placeholder="Email" required style="flex:1;" value="{{ old('email', $user['email']) }}">
+                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
+                    <label for="owner_name">Owner Name</label>
+                    <input type="text" id="owner_name" name="owner_name" placeholder="Ex - John Doe" required value="{{ old('owner_name', $user['name']) }}">
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
+                    <label for="phone">Phone Number</label>
+                    <input type="text" id="phone" name="phone" placeholder="Ex - 017XXXXXXXX" required value="{{ old('phone', $user['phone']) }}">
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Ex - johndoe@email.com" required value="{{ old('email', $user['email']) }}">
+                </div>
             </div>
             <div style="display:flex;gap:1rem;">
-                <select name="division" required style="flex:1;">
-                    <option value="">Division</option>
-                    <option value="Dhaka">Dhaka</option>
-                    <option value="Chittagong">Chittagong</option>
-                </select>
-                <select name="area" required style="flex:1;">
-                    <option value="">Area</option>
-                    <option value="adabor">Adabor</option>
-                    <option value="badda">Badda</option>
-                    <option value="mohakhali">Mohakhali</option>
-                </select>
+                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
+                    <label for="division">Division</label>
+                    <select name="division" id="division" required>
+                        <option value="">Division</option>
+                        <option value="Dhaka">Dhaka</option>
+                        <option value="Chittagong">Chittagong</option>
+                    </select>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
+                    <label for="area">Area</label>
+                    <select name="area" id="area" required>
+                        <option value="">Area</option>
+                        <option value="adabor">Adabor</option>
+                        <option value="badda">Badda</option>
+                        <option value="mohakhali">Mohakhali</option>
+                    </select>
+                </div>
             </div>
-            <input type="text" name="address" placeholder="Address in Details" required>
+            <div style="display:flex;flex-direction:column;gap:0.3rem;">
+                <label for="address">Address in Details</label>
+                <input type="text" id="address" name="address" placeholder="Ex - House 12, Road 3, Dhanmondi, Dhaka" required>
+            </div>
             <div style="display:flex;gap:1rem;">
-                <select name="cc_camera" required style="flex:1;">
-                    <option value="">CC Camera</option>
-                    <option value="1">Yes</option>
-                    <option value="0">No</option>
-                </select>
-                <select name="guard" required style="flex:1;">
-                    <option value="">Guard</option>
-                    <option value="1">Yes</option>
-                    <option value="0">No</option>
-                </select>
-                <select name="indoor" required style="flex:1;">
-                    <option value="">Indoor/Outdoor</option>
-                    <option value="indoor">Indoor</option>
-                    <option value="outdoor">Outdoor</option>
-                </select>
+                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
+                    <label for="cc_camera">CC Camera</label>
+                    <select name="cc_camera" id="cc_camera" required>
+                        <option value="">CC Camera</option>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
+                    <label for="guard">Guard</label>
+                    <select name="guard" id="guard" required>
+                        <option value="">Guard</option>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
+                    <label for="indoor">Indoor/Outdoor</label>
+                    <select name="indoor" id="indoor" required>
+                        <option value="">Indoor/Outdoor</option>
+                        <option value="indoor">Indoor</option>
+                        <option value="outdoor">Outdoor</option>
+                    </select>
+                </div>
             </div>
-            <input type="number" name="bike_slot" placeholder="Bike Slot (Fillup this if you want to allow bikes)">
-            <input type="number" name="car_slot" placeholder="Car Slot (Fillup this if you want to allow cars)">
-            <input type="number" name="bicycle_slot" placeholder="Bicycle Slot (Fillup this if you want to allow bicycle)">
             <div style="display:flex;gap:1rem;">
-                <label style="flex:1;">
-                    Start Time
-                    <input type="text" name="start_time" required style="width:100%;" placeholder="Select start time">
-                </label>
-                <label style="flex:1;">
-                    End Time
-                    <input type="text" name="end_time" required style="width:100%;" placeholder="Select end time">
-                </label>
+                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
+                    <label for="bike_slot">Bike Slot</label>
+                    <input type="number" id="bike_slot" name="bike_slot" placeholder="Ex - 5">
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
+                    <label for="car_slot">Car Slot</label>
+                    <input type="number" id="car_slot" name="car_slot" placeholder="Ex - 2">
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
+                    <label for="bicycle_slot">Bicycle Slot</label>
+                    <input type="number" id="bicycle_slot" name="bicycle_slot" placeholder="Ex - 3">
+                </div>
             </div>
-            <select name="place_type" required>
-                <option value="">Place Type</option>
-                <option value="residential">Residential</option>
-                <option value="market">Market</option>
-            </select>
-            <input type="text" name="nid" placeholder="NID" required>
-            <input type="text" name="customer_id" placeholder="Customer ID (Utility Bill)" required>
-            <input type="text" name="passport" placeholder="Passport">
-            <input type="number" name="rent" placeholder="Rent (required)" required min="0" step="0.01">
+            <div style="display:flex;gap:1rem;">
+                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
+                    <label for="start_time">Start Time</label>
+                    <input type="text" id="start_time" name="start_time" required placeholder="Ex - 08:00">
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
+                    <label for="end_time">End Time</label>
+                    <input type="text" id="end_time" name="end_time" required placeholder="Ex - 22:00">
+                </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:0.3rem;">
+                <label for="place_type">Place Type</label>
+                <select name="place_type" id="place_type" required>
+                    <option value="">Place Type</option>
+                    <option value="residential">Residential</option>
+                    <option value="market">Market</option>
+                </select>
+            </div>
+            <div style="display:flex;gap:1rem;">
+                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
+                    <label for="nid">NID</label>
+                    <input type="text" id="nid" name="nid" placeholder="Ex - 1234567890" required>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
+                    <label for="customer_id">Customer ID (Utility Bill)</label>
+                    <input type="text" id="customer_id" name="customer_id" placeholder="Ex - 987654321" required>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
+                    <label for="passport">Passport</label>
+                    <input type="text" id="passport" name="passport" placeholder="Ex - AB1234567">
+                </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:0.3rem;">
+                <label for="rent">Rent (required)</label>
+                <input type="number" id="rent" name="rent" placeholder="Ex - 200" required min="0" step="0.01">
+            </div>
             <div style="display:flex;gap:1rem;align-items:center;">
-                <div style="flex:1;">
-                    <label>Upload Photo of NID</label>
-                    <input type="file" name="nid_photo" accept="image/*" required>
+                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
+                    <label for="nid_photo">Upload Photo of NID</label>
+                    <input type="file" id="nid_photo" name="nid_photo" accept="image/*" required>
                 </div>
-                <div style="flex:1;">
-                    <label>Upload Photo of Bill</label>
-                    <input type="file" name="bill_photo" accept="image/*" required>
+                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
+                    <label for="bill_photo">Upload Photo of Bill</label>
+                    <input type="file" id="bill_photo" name="bill_photo" accept="image/*" required>
                 </div>
-                <div style="flex:1;">
-                    <label>Upload Photo of Passport</label>
-                    <input type="file" name="passport_photo" accept="image/*">
+                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
+                    <label for="passport_photo">Upload Photo of Passport</label>
+                    <input type="file" id="passport_photo" name="passport_photo" accept="image/*">
                 </div>
-                <div style="flex:1;">
-                    <label>Upload Photo(s) of Garage</label>
-                    <input type="file" name="garage_photos[]" accept="image/*" multiple>
+                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
+                    <label for="garage_photos">Upload Photo of Garage</label>
+                    <input type="file" id="garage_photos" name="garage_photos[]" accept="image/*" multiple required>
                 </div>
             </div>
             <div style="display:flex;gap:1rem;">
-                <select name="payment_method" required style="flex:1;">
-                    <option value="">Payment Method</option>
-                    <option value="BKash">BKash</option>
-                    <option value="Bank">Bank</option>
-                </select>
-                <input type="text" name="bank_details" placeholder="Bank Details" style="flex:1;">
+                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
+                    <label for="payment_method">Payment Method</label>
+                    <select name="payment_method" id="payment_method" required>
+                        <option value="">Payment Method</option>
+                        <option value="BKash">BKash</option>
+                        <option value="Bank">Bank</option>
+                    </select>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
+                    <label for="bank_details">Bank Details</label>
+                    <input type="text" id="bank_details" name="bank_details" placeholder="Ex - Bank Asia, A/C: 1234567890">
+                </div>
             </div>
             <div style="display:flex;gap:1rem;">
-                <input type="text" name="alternate_person_name" placeholder="Name of alternate person to contract" style="flex:1;">
-                <input type="text" name="alternate_person_phone" placeholder="Phone no of alternate person to contract" style="flex:1;">
+                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
+                    <label for="alternate_person_name">Name of alternate person to contract</label>
+                    <input type="text" id="alternate_person_name" name="alternate_person_name" placeholder="Ex - Jane Doe">
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">
+                    <label for="alternate_person_phone">Phone no of alternate person to contract</label>
+                    <input type="text" id="alternate_person_phone" name="alternate_person_phone" placeholder="Ex - 018XXXXXXXX">
+                </div>
             </div>
             <button type="submit" style="background:#444;color:#fff;padding:0.5rem 0;border:none;border-radius:3px;font-size:1rem;font-weight:600;">Done</button>
         </form>

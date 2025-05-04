@@ -68,7 +68,10 @@ CREATE TABLE bookings (
     start_time TIMESTAMP,
     end_time TIMESTAMP,
     vehicle_type VARCHAR(50),
-    vehicle_details TEXT
+    vehicle_details TEXT,
+    total_cost NUMERIC NOT NULL,
+    trxn TEXT NOT NULL,
+    booking_date DATE NOT NULL
 );
 
 EOF

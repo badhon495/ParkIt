@@ -59,37 +59,28 @@
                             <h3 style="margin-bottom:1.2rem;text-align:center;">Edit Booking #{{ $booking->booking_id }}</h3>
                             <form method="POST" action="/admin/bookings/{{ $booking->booking_id }}/edit" style="display:flex;flex-direction:column;gap:1.2rem;">
                                 @csrf
-                                <label style="display:flex;flex-direction:column;gap:0.3rem;">Driver Name
-                                    <input type="text" name="driver_name" value="{{ $booking->driver_name }}" placeholder="Driver Name" required>
-                                </label>
-                                <label style="display:flex;flex-direction:column;gap:0.3rem;">Driver Phone
-                                    <input type="text" name="driver_phone" value="{{ $booking->driver_phone }}" placeholder="Driver Phone" required>
-                                </label>
-                                <label style="display:flex;flex-direction:column;gap:0.3rem;">Owner Name
-                                    <input type="text" name="owner_name" value="{{ $booking->owner_name }}" placeholder="Owner Name" required>
-                                </label>
-                                <label style="display:flex;flex-direction:column;gap:0.3rem;">Owner Phone
-                                    <input type="text" name="owner_phone" value="{{ $booking->owner_phone }}" placeholder="Owner Phone" required>
-                                </label>
-                                <label style="display:flex;flex-direction:column;gap:0.3rem;">Start Time
-                                    <input type="text" name="start_time" value="{{ $booking->start_time }}" placeholder="Start Time" required>
-                                </label>
-                                <label style="display:flex;flex-direction:column;gap:0.3rem;">End Time
-                                    <input type="text" name="end_time" value="{{ $booking->end_time }}" placeholder="End Time" required>
-                                </label>
-                                <label style="display:flex;flex-direction:column;gap:0.3rem;">Vehicle Type
-                                    <select name="vehicle_type" required>
-                                        <option value="Car" {{ $booking->vehicle_type == 'car' ? 'selected' : '' }}>Car</option>
-                                        <option value="Bike" {{ $booking->vehicle_type == 'bike' ? 'selected' : '' }}>Bike</option>
-                                        <option value="Bicycle" {{ $booking->vehicle_type == 'bycle' ? 'selected' : '' }}>Bicycle</option>
-                                    </select>
-                                </label>
-                                <label style="display:flex;flex-direction:column;gap:0.3rem;">Vehicle Details
-                                    <input type="text" name="vehicle_details" value="{{ $booking->vehicle_details }}" placeholder="Vehicle Details">
-                                </label>
-                                <label style="display:flex;flex-direction:column;gap:0.3rem;">Tranx ID
-                                    <input type="text" name="tranx_id" value="{{ $booking->tranx_id }}" placeholder="Tranx ID">
-                                </label>
+                                <label for="driver_name">Driver Name</label>
+                                <input type="text" id="driver_name" name="driver_name" value="{{ $booking->driver_name }}" placeholder="Driver Name" required>
+                                <label for="driver_phone">Driver Phone</label>
+                                <input type="text" id="driver_phone" name="driver_phone" value="{{ $booking->driver_phone }}" placeholder="Driver Phone" required>
+                                <label for="owner_name">Owner Name</label>
+                                <input type="text" id="owner_name" name="owner_name" value="{{ $booking->owner_name }}" placeholder="Owner Name" required>
+                                <label for="owner_phone">Owner Phone</label>
+                                <input type="text" id="owner_phone" name="owner_phone" value="{{ $booking->owner_phone }}" placeholder="Owner Phone" required>
+                                <label for="start_time">Start Time</label>
+                                <input type="text" id="start_time" name="start_time" value="{{ $booking->start_time }}" placeholder="Start Time" required>
+                                <label for="end_time">End Time</label>
+                                <input type="text" id="end_time" name="end_time" value="{{ $booking->end_time }}" placeholder="End Time" required>
+                                <label for="vehicle_type">Vehicle Type</label>
+                                <select id="vehicle_type" name="vehicle_type" required>
+                                    <option value="car" {{ $booking->vehicle_type == 'car' ? 'selected' : '' }}>Car</option>
+                                    <option value="bike" {{ $booking->vehicle_type == 'bike' ? 'selected' : '' }}>Bike</option>
+                                    <option value="bycle" {{ $booking->vehicle_type == 'bycle' ? 'selected' : '' }}>Bicycle</option>
+                                </select>
+                                <label for="vehicle_details">Vehicle Details</label>
+                                <input type="text" id="vehicle_details" name="vehicle_details" value="{{ $booking->vehicle_details }}" placeholder="Vehicle Details">
+                                <label for="tranx_id">Tranx ID</label>
+                                <input type="text" id="tranx_id" name="tranx_id" value="{{ $booking->tranx_id }}" placeholder="Tranx ID">
                                 <div style="display:flex;gap:1.5rem;justify-content:center;margin-top:0.5rem;">
                                     <button type="submit" style="padding:8px 24px;background:#444;color:#fff;border:none;border-radius:4px;">Save</button>
                                     <button type="button" onclick="hideEditPopup({{ $booking->booking_id }})" style="padding:8px 24px;background:#eee;color:#222;border:none;border-radius:4px;">Cancel</button>

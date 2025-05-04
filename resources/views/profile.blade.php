@@ -10,13 +10,13 @@
             <div><strong>Email:</strong> {{ session('user_email') }}</div>
             <div><strong>Type:</strong> {{ session('user_type') }}</div>
         </div>
-        <div style="text-align:center;margin-top:1.5rem;">
-            <a href="/profile/edit" style="background:#444;color:#fff;padding:0.5rem 1.5rem;border-radius:3px;text-decoration:none;font-weight:600;">Update Profile</a>
+        <div style="text-align:center;margin-top:1.5rem;display:flex;flex-direction:column;align-items:center;gap:1rem;">
+            <a href="/profile/edit" style="background:#444;color:#fff;padding:0.5rem 1.5rem;border-radius:3px;font-weight:600;border:none;width:100%;max-width:300px;display:block;text-align:center;text-decoration:none;font-size:1.1rem;">Update Profile</a>
+            <form method="POST" action="{{ route('profile.delete') }}" onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');" style="width:100%;max-width:300px;">
+                @csrf
+                <button type="submit" style="background:#e3342f;color:#fff;padding:0.5rem 1.5rem;border-radius:3px;font-weight:600;border:none;width:100%;font-size:1.1rem;">Delete Account</button>
+            </form>
         </div>
-        <form method="POST" action="{{ route('profile.delete') }}" onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');" style="text-align:center;margin-top:1rem;">
-            @csrf
-            <button type="submit" style="background:#e3342f;color:#fff;padding:0.5rem 1.5rem;border-radius:3px;font-weight:600;border:none;width:calc(100% - 0px);max-width:200px;">Delete Account</button>
-        </form>
     </div>
 </main>
 @endsection
