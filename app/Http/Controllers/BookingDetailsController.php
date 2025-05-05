@@ -109,11 +109,17 @@ class BookingDetailsController extends Controller
         $query = DB::table('bookings')
             ->join('parking_details', 'bookings.garage_id', '=', 'parking_details.garage_id')
             ->select('bookings.*', 'parking_details.area', 'parking_details.division', 'parking_details.rent', 'parking_details.parking_type', 'parking_details.location', 'parking_details.images');
+        $error = null;
         if ($request->filled('search_id')) {
-            $query->where('bookings.booking_id', $request->search_id);
+            try {
+                if (!is_numeric($request->search_id)) throw new \Exception('Booking ID must be a number.');
+                $query->where('bookings.booking_id', $request->search_id);
+            } catch (\Throwable $e) {
+                $error = 'Wrong input: ' . $e->getMessage();
+            }
         }
         $bookings = $query->orderByDesc('bookings.created_at')->get();
-        return view('admin_bookings', compact('bookings'));
+        return view('admin_bookings', compact('bookings', 'error'));
     }
 
     public function adminEditBooking(Request $request, $booking_id) {
@@ -129,11 +135,17 @@ class BookingDetailsController extends Controller
     public function adminUsers(Request $request) {
         if (session('user_type') !== 'admin') abort(403, 'Unauthorized');
         $query = DB::table('users');
+        $error = null;
         if ($request->filled('search_id')) {
-            $query->where('id', $request->search_id);
+            try {
+                if (!is_numeric($request->search_id)) throw new \Exception('User ID must be a number.');
+                $query->where('id', $request->search_id);
+            } catch (\Throwable $e) {
+                $error = 'Wrong input: ' . $e->getMessage();
+            }
         }
         $users = $query->orderByDesc('id')->get();
-        return view('admin_users', compact('users'));
+        return view('admin_users', compact('users', 'error'));
     }
 
     // Admin: Parking List
@@ -142,19 +154,25 @@ class BookingDetailsController extends Controller
         $query = DB::table('parking_details')
             ->join('users', 'parking_details.usr_id', '=', 'users.id')
             ->select('parking_details.*', 'users.name as owner_name', 'users.phone as owner_phone');
+        $error = null;
         if ($request->filled('search_field') && $request->filled('search_value')) {
             $field = $request->search_field;
             $value = $request->search_value;
-            if (in_array($field, ['garage_id', 'area', 'division', 'nid'])) {
-                if ($field === 'garage_id') {
-                    $query->where('parking_details.garage_id', $value);
-                } else {
-                    $query->where('parking_details.' . $field, 'like', '%' . $value . '%');
+            try {
+                if (in_array($field, ['garage_id', 'area', 'division', 'nid'])) {
+                    if ($field === 'garage_id') {
+                        if (!is_numeric($value)) throw new \Exception('Garage ID must be a number.');
+                        $query->where('parking_details.garage_id', $value);
+                    } else {
+                        $query->where('parking_details.' . $field, 'like', '%' . $value . '%');
+                    }
                 }
+            } catch (\Throwable $e) {
+                $error = 'Wrong input: ' . $e->getMessage();
             }
         }
         $garages = $query->orderByDesc('garage_id')->get();
-        return view('admin_parking', compact('garages'));
+        return view('admin_parking', compact('garages', 'error'));
     }
 
     // Admin: Edit parking view
@@ -173,29 +191,46 @@ class BookingDetailsController extends Controller
     public function adminEditParkingUpdate(Request $request, $garage_id)
     {
         if (session('user_type') !== 'admin') abort(403, 'Unauthorized');
-        $validated = $request->validate([
-            'area' => 'required|string|max:100',
-            'division' => 'required|string|max:100',
-            'location' => 'required|string',
-            'camera' => 'required|in:0,1',
-            'guard' => 'required|in:0,1',
-            'indoor' => 'required|in:indoor,outdoor',
-            'slots' => 'required|array',
-            'nid' => 'required|string',
-            'utility_bill' => 'required|string',
+        // Only validate fields that are present in the request
+        $rules = [
+            'area' => 'sometimes|string|max:100',
+            'division' => 'sometimes|string|max:100',
+            'address' => 'sometimes|string',
+            'cc_camera' => 'sometimes|in:0,1',
+            'guard' => 'sometimes|in:0,1',
+            'indoor' => 'sometimes|in:indoor,outdoor',
+            'slots' => 'sometimes|array',
+            'nid' => 'sometimes|string',
+            'customer_id' => 'sometimes|string',
             'passport' => 'nullable|string',
-            'alt_name' => 'nullable|string',
-            'alt_phone' => 'nullable|string',
-            'payment_method' => 'required|string',
+            'alternate_person_name' => 'nullable|string',
+            'alternate_person_phone' => 'nullable|string',
+            'payment_method' => 'sometimes|string',
             'bank_details' => 'nullable|string',
-            'rent' => 'required|numeric|min:0',
-            'parking_type' => 'required|string',
-        ]);
-        $data = $request->only([
-            'area', 'division', 'location', 'camera', 'guard', 'indoor', 'slots', 'nid', 'utility_bill', 'passport', 'alt_name', 'alt_phone', 'payment_method', 'bank_details', 'rent', 'parking_type'
-        ]);
-        $data['slots'] = json_encode($request->input('slots', []));
-        DB::table('parking_details')->where('garage_id', $garage_id)->update($data);
+            'rent' => 'sometimes|numeric|min:0',
+            'place_type' => 'sometimes|string',
+        ];
+        $validated = $request->validate($rules);
+        $data = $request->only(array_keys($rules));
+        // Map form fields to DB columns
+        $dbData = [];
+        if (isset($data['area'])) $dbData['area'] = $data['area'];
+        if (isset($data['division'])) $dbData['division'] = $data['division'];
+        if (isset($data['address'])) $dbData['location'] = $data['address'];
+        if (isset($data['cc_camera'])) $dbData['camera'] = $data['cc_camera'];
+        if (isset($data['guard'])) $dbData['guard'] = $data['guard'];
+        if (isset($data['indoor'])) $dbData['indoor'] = $data['indoor'];
+        if (isset($data['slots'])) $dbData['slots'] = json_encode($data['slots']);
+        if (isset($data['nid'])) $dbData['nid'] = $data['nid'];
+        if (isset($data['customer_id'])) $dbData['utility_bill'] = $data['customer_id'];
+        if (isset($data['passport'])) $dbData['passport'] = $data['passport'];
+        if (isset($data['alternate_person_name'])) $dbData['alt_name'] = $data['alternate_person_name'];
+        if (isset($data['alternate_person_phone'])) $dbData['alt_phone'] = $data['alternate_person_phone'];
+        if (isset($data['payment_method'])) $dbData['payment_method'] = $data['payment_method'];
+        if (isset($data['bank_details'])) $dbData['bank_details'] = $data['bank_details'];
+        if (isset($data['rent'])) $dbData['rent'] = $data['rent'];
+        if (isset($data['place_type'])) $dbData['parking_type'] = $data['place_type'];
+        DB::table('parking_details')->where('garage_id', $garage_id)->update($dbData);
         return redirect()->route('admin.edit-parking', $garage_id)->with('success', 'Garage updated successfully!');
     }
 

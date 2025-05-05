@@ -28,7 +28,7 @@
             </form>
             <div style="text-align:center;margin-top:1.5rem;font-size:0.95rem;color:#888;">
                 Your parking has been booked for 10 Minutes.<br>
-                Please pay to confirm your order
+                Please pay to 01533024558 to confirm your order
             </div>
         </div>
     </div>

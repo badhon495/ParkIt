@@ -19,8 +19,8 @@
                     <th style="padding:8px;">Area</th>
                     <th style="padding:8px;">Type</th>
                     <th style="padding:8px;">Rent/hr</th>
-                    <th style="padding:8px;">Start</th>
-                    <th style="padding:8px;">End</th>
+                    <th style="padding:8px;">Booking Date</th>
+                    <th style="padding:8px;">Booked Slots</th>
                     <th style="padding:8px;">Vehicle</th>
                     <th style="padding:8px;">Driver</th>
                     <th style="padding:8px;">Edit</th>
@@ -44,8 +44,22 @@
                         <td style="padding:8px;">{{ $booking->area }}</td>
                         <td style="padding:8px;">{{ ucfirst($booking->parking_type) }}</td>
                         <td style="padding:8px;">{{ $booking->rent }}</td>
-                        <td style="padding:8px;">{{ $booking->start_time }}</td>
-                        <td style="padding:8px;">{{ $booking->end_time }}</td>
+                        <td style="padding:8px;">{{ $booking->booking_date ?? '-' }}</td>
+                        <td style="padding:8px;">
+                            @php
+                                $slots = isset($booking->booked_slots) ? json_decode($booking->booked_slots, true) : [];
+                                if (is_array($slots) && count($slots)) {
+                                    $slotLabels = collect($slots)->map(function($s) {
+                                        $start = str_pad($s, 2, '0', STR_PAD_LEFT) . ':00';
+                                        $end = str_pad(($s+1)%24, 2, '0', STR_PAD_LEFT) . ':00';
+                                        return $start . '-' . $end;
+                                    });
+                                    echo implode(', ', $slotLabels->toArray());
+                                } else {
+                                    echo '-';
+                                }
+                            @endphp
+                        </td>
                         <td style="padding:8px;">{{ $booking->vehicle_type }}</td>
                         <td style="padding:8px;">{{ $booking->driver_name }}</td>
                         <td style="padding:8px;">
@@ -67,10 +81,10 @@
                                 <input type="text" id="owner_name" name="owner_name" value="{{ $booking->owner_name }}" placeholder="Owner Name" required>
                                 <label for="owner_phone">Owner Phone</label>
                                 <input type="text" id="owner_phone" name="owner_phone" value="{{ $booking->owner_phone }}" placeholder="Owner Phone" required>
-                                <label for="start_time">Start Time</label>
-                                <input type="text" id="start_time" name="start_time" value="{{ $booking->start_time }}" placeholder="Start Time" required>
-                                <label for="end_time">End Time</label>
-                                <input type="text" id="end_time" name="end_time" value="{{ $booking->end_time }}" placeholder="End Time" required>
+                                <label for="start_time">Booking Date</label>
+                                <input type="text" id="start_time" name="booking_date" value="{{ $booking->booking_date }}" placeholder="Booking Date" required>
+                                <label for="end_time">Booked Slots</label>
+                                <input type="text" id="end_time" name="booked_slots" value="@php $slots = isset($booking->booked_slots) ? json_decode($booking->booked_slots, true) : []; if(is_array($slots)&&count($slots)){ $slotLabels = collect($slots)->map(function($s){ $start = str_pad($s,2,'0',STR_PAD_LEFT).':00'; $end = str_pad(($s+1)%24,2,'0',STR_PAD_LEFT).':00'; return $start.'-'.$end; }); echo implode(', ',$slotLabels->toArray()); } @endphp" placeholder="Booked Slots" readonly>
                                 <label for="vehicle_type">Vehicle Type</label>
                                 <select id="vehicle_type" name="vehicle_type" required>
                                     <option value="car" {{ $booking->vehicle_type == 'car' ? 'selected' : '' }}>Car</option>

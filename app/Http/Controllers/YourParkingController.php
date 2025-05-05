@@ -16,20 +16,33 @@ class YourParkingController extends Controller
         }
 
         $query = DB::table('parking_details')->where('usr_id', $userId);
-        if ($request->filled('garage_id')) {
-            $query->where('garage_id', $request->garage_id);
-        }
-        if ($request->filled('area')) {
-            $query->where('area', 'like', '%' . $request->area . '%');
-        }
-        if ($request->filled('division')) {
-            $query->where('division', 'like', '%' . $request->division . '%');
-        }
-        if ($request->filled('nid')) {
-            $query->where('nid', 'like', '%' . $request->nid . '%');
+
+        // Support search from search_field/search_value (from the form)
+        $searchError = null;
+        if ($request->filled('search_field') && $request->filled('search_value')) {
+            $field = $request->search_field;
+            $value = $request->search_value;
+            if (in_array($field, ['garage_id', 'area', 'division', 'nid'])) {
+                if ($field === 'garage_id') {
+                    if (is_numeric($value)) {
+                        $query->where('garage_id', (int)$value);
+                    } else {
+                        $searchError = 'Garage ID must be a number.';
+                    }
+                } else if ($field === 'division') {
+                    $query->whereRaw('LOWER(division) LIKE ?', ['%' . strtolower($value) . '%']);
+                } else if ($field === 'area') {
+                    $query->whereRaw('LOWER(area) LIKE ?', ['%' . strtolower($value) . '%']);
+                } else if ($field === 'nid') {
+                    $query->where('nid', 'like', '%' . $value . '%');
+                }
+            } else {
+                $searchError = 'Invalid search field.';
+            }
         }
 
+        // Remove old direct query param filters to avoid conflicts
         $garages = $query->get();
-        return view('your_parking', compact('garages'));
+        return view('your_parking', compact('garages', 'searchError'));
     }
 }

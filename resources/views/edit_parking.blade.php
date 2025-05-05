@@ -13,7 +13,7 @@
                 </ul>
             </div>
         @endif
-        <form method="POST" action="/edit-parking/{{ $garage->garage_id }}" enctype="multipart/form-data" style="display:flex;flex-direction:column;gap:1.5rem;">
+        <form method="POST" action="{{ isset($formAction) ? $formAction : url('/edit-parking/' . $garage->garage_id) }}" enctype="multipart/form-data" style="display:flex;flex-direction:column;gap:1.5rem;">
             @csrf
             <div style="display:flex;gap:1rem;">
                 <div style="flex:1;display:flex;flex-direction:column;gap:0.3rem;">

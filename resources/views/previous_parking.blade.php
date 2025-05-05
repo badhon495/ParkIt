@@ -2,7 +2,7 @@
 @section('title', 'Previous Parkings')
 @section('content')
 <main style="min-height:60vh;display:flex;align-items:center;justify-content:center;">
-    <div style="background:#fff;padding:2.5rem 2.5rem 2rem 2.5rem;border-radius:0.5rem;box-shadow:0 1px 8px rgba(0,0,0,0.10);max-width:900px;width:100%;">
+    <div style="background:#fff;padding:5rem 5rem 5rem 5rem;border-radius:0.5rem;box-shadow:0 1px 8px rgba(0,0,0,0.10);max-width:900px;width:100%;">
         <h2 style="text-align:center;font-size:2rem;font-weight:700;color:#444;margin-bottom:2rem;">Your Previous Parkings</h2>
         <table style="width:100%;border-collapse:collapse;">
             <thead>

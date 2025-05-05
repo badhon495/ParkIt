@@ -79,6 +79,7 @@ class RegisterParkingController extends Controller
 
         // Insert into parking_details table
         DB::table('parking_details')->insert([
+            'usr_id' => session('user_id'), // Ensure the garage is linked to the current user
             'images' => $garagePhotoPaths ? json_encode($garagePhotoPaths) : null,
             'rent' => $request->input('rent'),
             'parking_type' => $request->input('place_type'),

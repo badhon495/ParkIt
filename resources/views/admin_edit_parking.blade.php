@@ -9,79 +9,16 @@
                 {{ session('success') }}
             </div>
         @endif
-        <form method="POST" action="" style="display:flex;flex-direction:column;gap:1.5rem;">
-            @csrf
-            <div style="display:flex;gap:1rem;">
-                <input type="text" name="owner_name" value="{{ $owner->name ?? '-' }}" readonly style="flex:1;background:#f3f3f3;">
-                <input type="text" name="owner_phone" value="{{ $owner->phone ?? '-' }}" readonly style="flex:1;background:#f3f3f3;">
-            </div>
-            <div style="display:flex;gap:1rem;">
-                <select name="division" required style="flex:1;">
-                    <option value="">Division</option>
-                    <option value="Dhaka" {{ $garage->division == 'Dhaka' ? 'selected' : '' }}>Dhaka</option>
-                    <option value="Chittagong" {{ $garage->division == 'Chittagong' ? 'selected' : '' }}>Chittagong</option>
-                </select>
-                <input type="text" name="area" placeholder="Area" required style="flex:1;" value="{{ $garage->area }}">
-            </div>
-            <input type="text" name="location" placeholder="Address in Details" required value="{{ $garage->location }}">
-            <div style="display:flex;gap:1rem;">
-                <select name="camera" required style="flex:1;">
-                    <option value="">CC Camera</option>
-                    <option value="1" {{ $garage->camera ? 'selected' : '' }}>Yes</option>
-                    <option value="0" {{ !$garage->camera ? 'selected' : '' }}>No</option>
-                </select>
-                <select name="guard" required style="flex:1;">
-                    <option value="">Guard</option>
-                    <option value="1" {{ $garage->guard ? 'selected' : '' }}>Yes</option>
-                    <option value="0" {{ !$garage->guard ? 'selected' : '' }}>No</option>
-                </select>
-                <select name="indoor" required style="flex:1;">
-                    <option value="">Indoor/Outdoor</option>
-                    <option value="indoor" {{ $garage->indoor == 'indoor' ? 'selected' : '' }}>Indoor</option>
-                    <option value="outdoor" {{ $garage->indoor == 'outdoor' ? 'selected' : '' }}>Outdoor</option>
-                </select>
-            </div>
-            <!-- Time Slots Multi-Select -->
-            <div style="display:flex;flex-direction:column;gap:0.3rem;">
-                <label for="slots">Available Time Slots <span style="color:red;">*</span></label>
-                <div id="slots" style="display:flex;flex-wrap:wrap;gap:0.5rem 1.5rem;">
-                    @php
-                        $selectedSlots = old('slots', isset($garage->slots) ? json_decode($garage->slots, true) : []);
-                    @endphp
-                    @for ($i = 0; $i < 24; $i++)
-                        <div style="min-width:120px;">
-                            <input type="checkbox" name="slots[]" id="slot_{{ $i }}" value="{{ $i }}" {{ is_array($selectedSlots) && in_array($i, $selectedSlots) ? 'checked' : '' }}>
-                            <label for="slot_{{ $i }}">
-                                {{ sprintf('%02d:00', $i) }} - {{ sprintf('%02d:00', ($i+1)%24) }}
-                            </label>
-                        </div>
-                    @endfor
-                </div>
-                <small style="color:#888;">Select all one-hour slots when this garage is available for booking. (e.g., 08:00-09:00 means slot 8)</small>
-            </div>
-            <select name="parking_type" required>
-                <option value="">Place Type</option>
-                <option value="residential" {{ $garage->parking_type == 'residential' ? 'selected' : '' }}>Residential</option>
-                <option value="market" {{ $garage->parking_type == 'market' ? 'selected' : '' }}>Market</option>
-            </select>
-            <input type="text" name="nid" placeholder="NID" required value="{{ $garage->nid }}">
-            <input type="text" name="utility_bill" placeholder="Customer ID (Utility Bill)" required value="{{ $garage->utility_bill }}">
-            <input type="text" name="passport" placeholder="Passport" value="{{ $garage->passport }}">
-            <input type="number" name="rent" placeholder="Rent (required)" required min="0" step="0.01" value="{{ $garage->rent }}">
-            <div style="display:flex;gap:1rem;align-items:center;">
-                <input type="text" name="alt_name" placeholder="Name of alternate person to contract" style="flex:1;" value="{{ $garage->alt_name }}">
-                <input type="text" name="alt_phone" placeholder="Phone no of alternate person to contract" style="flex:1;" value="{{ $garage->alt_phone }}">
-            </div>
-            <div style="display:flex;gap:1rem;">
-                <select name="payment_method" required style="flex:1;">
-                    <option value="">Payment Method</option>
-                    <option value="BKash" {{ $garage->payment_method == 'BKash' ? 'selected' : '' }}>BKash</option>
-                    <option value="Bank" {{ $garage->payment_method == 'Bank' ? 'selected' : '' }}>Bank</option>
-                </select>
-                <input type="text" name="bank_details" placeholder="Bank Details" style="flex:1;" value="{{ $garage->bank_details }}">
-            </div>
-            <button type="submit" style="background:#444;color:#fff;padding:0.5rem 0;border:none;border-radius:3px;font-size:1rem;font-weight:600;">Update</button>
-        </form>
+        @include('edit_parking', [
+            'garage' => $garage,
+            'user' => [
+                'name' => $owner->name ?? '',
+                'phone' => $owner->phone ?? '',
+                'email' => $owner->email ?? ''
+            ],
+            'formAction' => url('/admin/edit-parking/' . $garage->garage_id),
+            'isAdmin' => true
+        ])
     </div>
 </main>
 @endsection
