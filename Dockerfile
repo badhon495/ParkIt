@@ -21,6 +21,8 @@ COPY --from=nodebuild /app/node_modules /var/www/html/node_modules
 RUN composer install --no-dev --optimize-autoloader
 RUN php artisan key:generate --force || true
 RUN php artisan storage:link || true
+RUN php artisan session:table || true
+RUN php artisan migrate --force || true
 RUN chown -R www-data:www-data storage bootstrap/cache
 
 ENV APP_ENV=production
