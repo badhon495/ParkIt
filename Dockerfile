@@ -31,6 +31,7 @@ ENV HOST=0.0.0.0
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 RUN sed -i 's/listen 80;/listen ${PORT};/g' /etc/nginx/sites-available/default.conf
+RUN sed -i 's|root /var/www/html;|root /var/www/html/public;|g' /etc/nginx/sites-available/default.conf
 
 EXPOSE 10000
 
