@@ -1,5 +1,5 @@
 # Stage 1: Build assets with Node
-FROM node:20@sha256:5b7b3c8b8f8f8c8e8f8f8c8b8f8f8c8b8f8f8c8b8f8f8c8b8f8f8c8b8f8f8c8 AS nodebuild
+FROM node:20 AS nodebuild
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
