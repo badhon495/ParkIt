@@ -11,6 +11,8 @@ RUN npm run build
 FROM richarvey/nginx-php-fpm:latest
 
 COPY . .
+# Copy built assets from nodebuild stage
+COPY --from=nodebuild /app/public/build ./public/build
 
 # Image config
 ENV SKIP_COMPOSER=1
