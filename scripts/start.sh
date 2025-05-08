@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+# Clear Laravel caches
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+composer dump-autoload
+php artisan optimize:clear
+php artisan optimize
+
 # Run Laravel migrations
 php artisan migrate --force
 
