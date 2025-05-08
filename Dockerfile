@@ -15,7 +15,7 @@ WORKDIR /var/www/html
 COPY . .
 
 # Copy built assets from nodebuild
-COPY --from=nodebuild /app/public /var/www/html/public
+COPY --from=nodebuild /app/public/build /var/www/html/public/build
 COPY --from=nodebuild /app/node_modules /var/www/html/node_modules
 
 RUN composer install --no-dev --optimize-autoloader
