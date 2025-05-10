@@ -69,3 +69,5 @@ php artisan config:clear
 **Note:**
 - If you use 2-Step Verification on your Gmail, you must use an App Password instead of your regular password.
 - Make sure to allow access for less secure apps or use App Passwords in your Google account settings.
+- You can check the website from the ParkIt [https://parkit-2arc.onrender.com] to see the working of the project. As it is hosted on Render free tier, it may take some time to load the website.
+- In wireframe diagram, you can see the flow of the project.
