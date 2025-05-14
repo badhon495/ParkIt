@@ -46,6 +46,12 @@
                         </script>
                     @endif
                 </form>
+                <div style="text-align:center;margin-top:1rem;">
+                    <a href="{{ route('google.signup') }}" style="display:inline-block;background:#fff;color:#444;border:1px solid #aaa;padding:0.5rem 1rem;border-radius:3px;text-decoration:none;font-weight:600;">
+                        <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" style="width:20px;vertical-align:middle;margin-right:8px;">
+                        Sign up with Google
+                    </a>
+                </div>
             </div>
         </div>
     </div>

@@ -66,7 +66,23 @@ php artisan config:cache
 php artisan config:clear
 ```
 
-**Note:**
+## Google Sign-In Setup
+To enable Google Sign-In, you need to set up a Google API project and obtain the client ID and secret. Follow these steps:
+1. Go to the [Google Developers Console](https://console.developers.google.com/).
+2. Create a new project.
+3. Navigate to "Credentials" and create OAuth 2.0 credentials.
+4. Set the redirect URI to `http://your-domain.com/auth/google/callback`.
+5. Set the authorized JavaScript origins to your domain (e.g., `http://your-domain.com`).
+6. Enable the "Google+ API" for your project.
+7. Add the following lines to your `.env` file:
+   ```
+   GOOGLE_CLIENT_ID=your-client-id
+   GOOGLE_CLIENT_SECRET=your-client-secret
+   GOOGLE_REDIRECT_URI=http://your-domain.com/auth/google/callback
+   ```
+   ```
+
+## Note
 - If you use 2-Step Verification on your Gmail, you must use an App Password instead of your regular password.
 - Make sure to allow access for less secure apps or use App Passwords in your Google account settings.
 - You can check the website from the ParkIt [https://parkit-2arc.onrender.com] to see the working of the project. As it is hosted on Render free tier, it may take some time to load the website.
