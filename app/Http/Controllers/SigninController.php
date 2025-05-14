@@ -35,18 +35,23 @@ class SigninController extends Controller
             ->where('phone', $request->login)
             ->orWhere('email', $request->login)
             ->first();
-        if ($user && Hash::check($request->password, $user->password)) {
-            // Store user info in session
-            Session::put('user_id', $user->id);
-            Session::put('user_name', $user->name);
-            Session::put('user_type', $user->type);
-            Session::put('user_phone', $user->phone);
-            Session::put('user_email', $user->email);
-            // If admin user in DB, also set admin type
-            if ($user->email === 'admin@gmail.com') {
-                Session::put('user_type', 'admin');
+        if ($user) {
+            if (empty($user->password)) {
+                return back()->withErrors(['login' => 'This account was created with Google. Please log in using Google Sign-In.'])->withInput();
             }
-            return redirect('/')->with('success', 'Logged in successfully!');
+            if (Hash::check($request->password, $user->password)) {
+                // Store user info in session
+                Session::put('user_id', $user->id);
+                Session::put('user_name', $user->name);
+                Session::put('user_type', $user->type);
+                Session::put('user_phone', $user->phone);
+                Session::put('user_email', $user->email);
+                // If admin user in DB, also set admin type
+                if ($user->email === 'admin@gmail.com') {
+                    Session::put('user_type', 'admin');
+                }
+                return redirect('/')->with('success', 'Logged in successfully!');
+            }
         }
         return back()->withErrors(['login' => 'Invalid email/phone or password'])->withInput();
     }
