@@ -209,6 +209,10 @@
                 if (e.target === this) this.style.display = 'none';
             };
         </script>
+        <form method="POST" action="{{ route('edit-parking.destroy', $garage->garage_id) }}" onsubmit="return confirm('Are you sure you want to delete this garage and all its bookings?');" style="margin-top:2rem;">
+            @csrf
+            <button type="submit" style="background:#e74c3c;color:#fff;padding:0.5rem 0;border:none;border-radius:3px;font-size:1rem;font-weight:600;width:100%;">Delete Garage</button>
+        </form>
         <div style="text-align:center;margin-top:2.5rem;">
             <h3>Questions about garage update?</h3>
             <p>Call 01533024242</p>

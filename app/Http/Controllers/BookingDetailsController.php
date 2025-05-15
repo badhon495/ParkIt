@@ -125,11 +125,17 @@ class BookingDetailsController extends Controller
     public function adminEditBooking(Request $request, $booking_id) {
         if (session('user_type') !== 'admin') abort(403, 'Unauthorized');
         $fields = [
-            'driver_name', 'driver_phone', 'owner_name', 'owner_phone', 'vehicle_type', 'vehicle_details', 'tranx_id'
+            'driver_name', 'driver_phone', 'owner_name', 'owner_phone', 'vehicle_type', 'vehicle_details', 'trxn'
         ];
         $data = $request->only($fields);
         DB::table('bookings')->where('booking_id', $booking_id)->update($data);
         return redirect()->back()->with('success', 'Booking updated successfully!');
+    }
+
+    public function adminDeleteBooking($booking_id) {
+        if (session('user_type') !== 'admin') abort(403, 'Unauthorized');
+        DB::table('bookings')->where('booking_id', $booking_id)->delete();
+        return redirect()->back()->with('success', 'Booking deleted successfully!');
     }
 
     public function adminUsers(Request $request) {

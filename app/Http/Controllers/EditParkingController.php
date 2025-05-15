@@ -109,4 +109,18 @@ class EditParkingController extends Controller
         ]);
         return redirect()->back()->with('success', 'Selected images deleted successfully.');
     }
+
+    public function destroy($garage_id)
+    {
+        $userId = session('user_id');
+        $garage = DB::table('parking_details')->where('garage_id', $garage_id)->where('usr_id', $userId)->first();
+        if (!$garage) {
+            return redirect('/your-parking')->with('error', 'Garage not found or access denied.');
+        }
+        // Delete all bookings for this garage
+        DB::table('bookings')->where('garage_id', $garage_id)->delete();
+        // Delete the garage itself
+        DB::table('parking_details')->where('garage_id', $garage_id)->delete();
+        return redirect('/your-parking')->with('success', 'Garage and all its bookings deleted successfully!');
+    }
 }

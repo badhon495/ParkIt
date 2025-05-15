@@ -23,7 +23,7 @@
                     <th style="padding:8px;">Booked Slots</th>
                     <th style="padding:8px;">Vehicle</th>
                     <th style="padding:8px;">Driver</th>
-                    <th style="padding:8px;">Edit</th>
+                    <th style="padding:8px;">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -93,11 +93,16 @@
                                 </select>
                                 <label for="vehicle_details">Vehicle Details</label>
                                 <input type="text" id="vehicle_details" name="vehicle_details" value="{{ $booking->vehicle_details }}" placeholder="Vehicle Details">
-                                <label for="tranx_id">Tranx ID</label>
-                                <input type="text" id="tranx_id" name="tranx_id" value="{{ $booking->tranx_id }}" placeholder="Tranx ID">
+                                <label for="trxn">Tranx ID</label>
+                                <input type="text" id="trxn" name="trxn" value="{{ $booking->trxn }}" placeholder="Tranx ID">
                                 <div style="display:flex;gap:1.5rem;justify-content:center;margin-top:0.5rem;">
                                     <button type="submit" style="padding:8px 24px;background:#444;color:#fff;border:none;border-radius:4px;">Save</button>
                                     <button type="button" onclick="hideEditPopup({{ $booking->booking_id }})" style="padding:8px 24px;background:#eee;color:#222;border:none;border-radius:4px;">Cancel</button>
+                                    <!-- Delete button as a separate form, but styled inline -->
+                                    <form method="POST" action="{{ route('admin.bookings.delete', $booking->booking_id) }}" style="margin:0;display:inline;">
+                                        @csrf
+                                        <button type="submit" onclick="return confirm('Are you sure you want to delete this booking?');" style="padding:8px 24px;background:#e74c3c;color:#fff;border:none;border-radius:4px;">Delete</button>
+                                    </form>
                                 </div>
                             </form>
                         </div>
@@ -118,3 +123,4 @@ function hideEditPopup(id) {
 }
 </script>
 @endsection
+

@@ -56,6 +56,9 @@ Route::post('/edit-parking/{garage_id}', [EditParkingController::class, 'update'
 // Route to handle deleting selected images from a garage
 Route::post('/edit-parking/{garage_id}/remove-images', [App\Http\Controllers\EditParkingController::class, 'removeImages'])->name('edit-parking.remove-images');
 
+// Route to handle deleting a garage and its bookings
+Route::post('/edit-parking/{garage_id}/delete', [EditParkingController::class, 'destroy'])->name('edit-parking.destroy');
+
 Route::get('/booking-details/{garage_id}', [BookingDetailsController::class, 'show'])->name('booking-details');
 Route::post('/booking-details/{garage_id}', [BookingDetailsController::class, 'store'])->name('booking-details.store');
 Route::match(['get', 'post'], '/order-confirmation/{booking_id}', [BookingDetailsController::class, 'confirmation'])->name('order-confirmation');
@@ -64,6 +67,7 @@ Route::get('/previous-parking', [BookingDetailsController::class, 'previous'])->
 
 Route::get('/admin/bookings', [BookingDetailsController::class, 'adminBookings'])->name('admin.bookings');
 Route::post('/admin/bookings/{booking_id}/edit', [BookingDetailsController::class, 'adminEditBooking'])->name('admin.bookings.edit');
+Route::post('/admin/bookings/{booking_id}/delete', [BookingDetailsController::class, 'adminDeleteBooking'])->name('admin.bookings.delete');
 Route::get('/admin/users', [BookingDetailsController::class, 'adminUsers'])->name('admin.users');
 
 // Admin: Edit user

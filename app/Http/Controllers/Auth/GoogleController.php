@@ -41,34 +41,4 @@ class GoogleController extends Controller
 
         return redirect('/')->with('success', 'Logged in with Google!');
     }
-
-    public function handleGoogleSignup()
-    {
-        try {
-            $googleUser = Socialite::driver('google')->user();
-        } catch (\Exception $e) {
-            return redirect('/signup')->with('error', 'Google authentication failed.');
-        }
-
-        $user = DB::table('users')->where('email', $googleUser->getEmail())->first();
-        if ($user) {
-            return redirect('/signin')->with('error', 'User already exists. Please log in with Google.');
-        }
-        // Create user with Google info, no password/phone
-        $userId = DB::table('users')->insertGetId([
-            'name' => $googleUser->getName() ?? $googleUser->getNickname() ?? 'Google User',
-            'email' => $googleUser->getEmail(),
-            'password' => '',
-            'type' => 'user',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-        // Log in user
-        session(['user_id' => $userId]);
-        session(['user_name' => $googleUser->getName() ?? $googleUser->getNickname() ?? 'Google User']);
-        session(['user_type' => 'user']);
-        session(['user_phone' => '']);
-        session(['user_email' => $googleUser->getEmail()]);
-        return redirect('/')->with('success', 'Account created and logged in with Google!');
-    }
 }
