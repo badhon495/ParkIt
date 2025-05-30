@@ -11,6 +11,7 @@ use App\Http\Controllers\YourParkingController;
 use App\Http\Controllers\EditParkingController;
 use App\Http\Controllers\FindParkingController;
 use App\Http\Controllers\BookingDetailsController;
+use App\Http\Controllers\Auth\GoogleController;
 
 Route::get('/', function () {
     // If logged in, redirect based on user type
@@ -77,3 +78,8 @@ Route::get('/admin/edit-parking/{garage_id}', [BookingDetailsController::class, 
 Route::post('/admin/edit-parking/{garage_id}', [BookingDetailsController::class, 'adminEditParkingUpdate'])->name('admin.edit-parking.update');
 
 Route::get('/owner/dashboard', [BookingDetailsController::class, 'ownerDashboard'])->name('owner.dashboard');
+
+Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+Route::get('/auth/google/signup', [GoogleController::class, 'redirectToGoogle'])->name('google.signup');
+Route::get('/auth/google/signup/callback', [GoogleController::class, 'handleGoogleSignup']);

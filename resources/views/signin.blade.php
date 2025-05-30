@@ -21,6 +21,12 @@
                 <div style="text-align:center;margin-top:1rem;">
                     <a href="/forgot-password" style="color:#444;text-decoration:underline;font-size:0.98rem;">Forgot Password</a>
                 </div>
+                <div style="text-align:center;margin-top:1rem;">
+                    <a href="{{ route('google.login') }}" style="display:inline-block;background:#fff;color:#444;border:1px solid #aaa;padding:0.5rem 1rem;border-radius:3px;text-decoration:none;font-weight:600;">
+                        <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" style="width:20px;vertical-align:middle;margin-right:8px;">
+                        Sign in with Google
+                    </a>
+                </div>
                 <div style="text-align:center;margin-top:0.5rem;font-size:1rem;">
                     New here? <a href="/signup" style="color:#444;text-decoration:underline;">Open an account</a>
                 </div>
