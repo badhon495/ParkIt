@@ -135,11 +135,28 @@ brew install php@8.3
 # Follow installation instructions for your OS
 ```
 
-#### 4. Verify Installation
+#### 4. Install Node.js and npm
+**Windows:**
+```bash
+# Download from https://nodejs.org/en/download/
+# Run installer with default settings
+```
+**Linux (Ubuntu/Debian):**
+```bash
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt install -y nodejs
+```
+**macOS:**
+```bash
+brew install node
+```
+#### 5. Verify Installations
 ```bash
 git --version
 php -v
 composer --version
+node -v
+npm -v
 ```
 
 ## Quick Start
