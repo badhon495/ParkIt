@@ -9,6 +9,8 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+    public $withinTransaction = false;
+    
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
@@ -20,10 +22,10 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
-{
-    Schema::table('users', function (Blueprint $table) {
-        $table->dropColumn(['phone', 'type']);
-    });
+    public function down(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn(['phone', 'type']);
+        });
     }
 };
