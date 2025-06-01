@@ -52,18 +52,6 @@
 - **Price Range Filtering**
 - **Real-time Availability** updates
 
-## Technology Stack
-
-| Category | Technology |
-|----------|------------|
-| **Backend** | Laravel 11.x, PHP 8.2+ |
-| **Frontend** | Blade Templates, TailwindCSS 4.0 |
-| **Database** | SQLite (Default), PostgreSQL Support |
-| **Build Tool** | Vite 6.x |
-| **Authentication** | Laravel Socialite (Google OAuth) |
-| **Styling** | Custom CSS + TailwindCSS |
-| **JavaScript** | Vanilla JS, Flatpickr |
-
 ## Live Demo
 
 **Try the live application:** [https://parkit-2arc.onrender.com](https://parkit-2arc.onrender.com)
