@@ -407,3 +407,9 @@ We welcome contributions! Please follow these steps:
 3. **Commit** changes: `git commit -m 'Add feature'`
 4. **Push** to branch: `git push origin feature-name`
 5. **Submit** a Pull Request
+
+---
+
+<div align="center">
+  <p>⭐ Star this repo if you found it helpful!</p>
+</div>
