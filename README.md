@@ -1,6 +1,6 @@
-# ParkIt - Smart Parking Booking System
-
 <div align="center">
+
+# ParkIt - Smart Parking Booking System
 
 ![Laravel](https://img.shields.io/badge/Laravel-11.x-red?style=flat-square&logo=laravel)
 ![PHP](https://img.shields.io/badge/PHP-8.2+-blue?style=flat-square&logo=php)
