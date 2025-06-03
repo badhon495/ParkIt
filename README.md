@@ -7,9 +7,9 @@
 ![SQLite](https://img.shields.io/badge/SQLite-Database-003B57?style=flat-square&logo=sqlite)
 ![Vite](https://img.shields.io/badge/Vite-6.x-646CFF?style=flat-square&logo=vite)
 
-</div>
 
 **ParkIt** is a comprehensive web application for parking space management and booking. Think of it as **Airbnb for parking spaces** - connecting car owners who need parking with homeowners who have available garage space to rent out.
+</div>
 
 ## Key Features
 
