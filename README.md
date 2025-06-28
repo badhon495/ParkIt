@@ -1,6 +1,6 @@
 <div align="center">
 
-# ParkIt - Smart Parking Booking System
+# ParkIt
 
 ![Laravel](https://img.shields.io/badge/Laravel-11.x-red?style=flat-square&logo=laravel)
 ![PHP](https://img.shields.io/badge/PHP-8.2+-blue?style=flat-square&logo=php)
@@ -377,6 +377,10 @@ We welcome contributions! Please follow these steps:
 3. **Commit** changes: `git commit -m 'Add feature'`
 4. **Push** to branch: `git push origin feature-name`
 5. **Submit** a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
