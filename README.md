@@ -277,36 +277,6 @@ php artisan config:clear
 # Test Google login at
 # http://localhost:8000/signin → "Sign in with Google"
 ```
-## 🏗️ Project Structure
-
-```
-ParkIt/
-├── 📁 app/
-│   ├── Http/Controllers/     # Application controllers
-│   └── Models/              # Eloquent models
-├── 📁 config/               # Configuration files
-├── 📁 database/
-│   ├── migrations/          # Database migrations
-│   └── database.sqlite      # SQLite database
-├── 📁 public/
-│   ├── images/              # Static images
-│   └── storage/             # Uploaded files
-├── 📁 resources/
-│   ├── css/                 # Stylesheets
-│   ├── js/                  # JavaScript files
-│   └── views/               # Blade templates
-├── 📁 routes/
-│   └── web.php              # Web routes
-├── 📁 storage/              # File storage
-└── 📄 package.json          # Node.js dependencies
-```
-
-## User Interface
-
-### Homepage
-- **Hero Section** with featured parking spaces
-- **Navigation** based on user role
-- **Call-to-Action** buttons for sign-up
 
 
 ## Troubleshooting
