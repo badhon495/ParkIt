@@ -66,7 +66,7 @@
                             $firstImage = !empty($images) ? $images[0] : null;
                         @endphp
                         @if($firstImage)
-                            <img src="{{ asset('storage/' . $firstImage) }}" alt="Garage Image" style="width:100px;height:70px;object-fit:cover;border-radius:6px;">
+                            <img src="{{ filter_var($firstImage, FILTER_VALIDATE_URL) ? $firstImage : asset('storage/' . $firstImage) }}" alt="Garage Image" style="width:100px;height:70px;object-fit:cover;border-radius:6px;">
                         @else
                             <svg class="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5V19a2 2 0 002 2h14a2 2 0 002-2v-2.5M16 3.13a4 4 0 010 7.75M12 7v6m0 0l-3-3m3 3l3-3" /></svg>
                         @endif

@@ -45,7 +45,7 @@
                                         $firstImage = !empty($images) ? $images[0] : null;
                                     @endphp
                                     @if($firstImage)
-                                        <img src="{{ asset('storage/' . $firstImage) }}" alt="Garage Image" style="width:48px;height:48px;object-fit:cover;border-radius:6px;">
+                                        <img src="{{ filter_var($firstImage, FILTER_VALIDATE_URL) ? $firstImage : asset('storage/' . $firstImage) }}" alt="Garage Image" style="width:48px;height:48px;object-fit:cover;border-radius:6px;">
                                     @else
                                         <span style="color:#888;">No Image</span>
                                     @endif

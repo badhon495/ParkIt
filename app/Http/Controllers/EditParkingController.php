@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Services\CloudinaryService;
 
 class EditParkingController extends Controller
 {
@@ -53,15 +54,20 @@ class EditParkingController extends Controller
 
         // Handle new garage photo uploads
         $garagePhotoPaths = $garage->images ? json_decode($garage->images, true) : [];
+        $cloudinaryService = new CloudinaryService();
+        
         if ($request->hasFile('garage_photos')) {
             foreach ($request->file('garage_photos') as $photo) {
                 if ($photo && $photo->isValid()) {
-                    $garagePhotoPaths[] = $photo->store('uploads/garage_photos', 'public');
+                    $result = $cloudinaryService->uploadFile($photo, 'parkit/garage_photos');
+                    if ($result['success']) {
+                        $garagePhotoPaths[] = $result['url'];
+                    }
                 }
             }
         }
 
-        DB::table('parking_details')->where('garage_id', $garage_id)->update([
+        $updateData = [
             'rent' => $request->input('rent'),
             'parking_type' => $request->input('place_type'),
             'area' => $request->input('area'),
@@ -79,7 +85,31 @@ class EditParkingController extends Controller
             'bank_details' => $request->input('bank_details'),
             'indoor' => $request->input('indoor'),
             'images' => $garagePhotoPaths ? json_encode($garagePhotoPaths) : null,
-        ]);
+        ];
+
+        // Handle document uploads if provided
+        if ($request->hasFile('nid_photo')) {
+            $result = $cloudinaryService->uploadFile($request->file('nid_photo'), 'parkit/nid_photos');
+            if ($result['success']) {
+                $updateData['nid_photo_url'] = $result['url'];
+            }
+        }
+
+        if ($request->hasFile('bill_photo')) {
+            $result = $cloudinaryService->uploadFile($request->file('bill_photo'), 'parkit/bill_photos');
+            if ($result['success']) {
+                $updateData['bill_photo_url'] = $result['url'];
+            }
+        }
+
+        if ($request->hasFile('passport_photo')) {
+            $result = $cloudinaryService->uploadFile($request->file('passport_photo'), 'parkit/passport_photos');
+            if ($result['success']) {
+                $updateData['passport_photo_url'] = $result['url'];
+            }
+        }
+
+        DB::table('parking_details')->where('garage_id', $garage_id)->update($updateData);
 
         return redirect('/your-parking')->with('success', 'Garage details updated successfully!');
     }

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use App\Services\CloudinaryService;
 
 class RegisterParkingController extends Controller
 {
@@ -62,17 +63,31 @@ class RegisterParkingController extends Controller
         Log::info('Register Parking Request:', $request->all());
         // dd($request->all());
 
-        // Handle file uploads
-        $nid_photo_path = $request->file('nid_photo')->store('uploads', 'public');
-        $bill_photo_path = $request->file('bill_photo')->store('uploads', 'public');
-        $passport_photo_path = $request->file('passport_photo') ? $request->file('passport_photo')->store('uploads', 'public') : null;
+        $cloudinaryService = new CloudinaryService();
+
+        // Handle file uploads to Cloudinary
+        $nid_photo_result = $cloudinaryService->uploadFile($request->file('nid_photo'), 'parkit/nid_photos');
+        $bill_photo_result = $cloudinaryService->uploadFile($request->file('bill_photo'), 'parkit/bill_photos');
+        
+        $passport_photo_result = null;
+        if ($request->file('passport_photo')) {
+            $passport_photo_result = $cloudinaryService->uploadFile($request->file('passport_photo'), 'parkit/passport_photos');
+        }
+
+        // Check for upload errors
+        if (!$nid_photo_result['success'] || !$bill_photo_result['success']) {
+            return redirect()->back()->with('error', 'Failed to upload required documents. Please try again.');
+        }
 
         // Handle garage photo uploads
         $garagePhotoPaths = [];
         if ($request->hasFile('garage_photos')) {
             foreach ($request->file('garage_photos') as $photo) {
                 if ($photo && $photo->isValid()) {
-                    $garagePhotoPaths[] = $photo->store('uploads/garage_photos', 'public');
+                    $result = $cloudinaryService->uploadFile($photo, 'parkit/garage_photos');
+                    if ($result['success']) {
+                        $garagePhotoPaths[] = $result['url'];
+                    }
                 }
             }
         }
@@ -97,6 +112,9 @@ class RegisterParkingController extends Controller
             'indoor' => $request->input('indoor'),
             'payment_method' => $request->input('payment_method'),
             'bank_details' => $request->input('bank_details'),
+            'nid_photo_url' => $nid_photo_result['url'],
+            'bill_photo_url' => $bill_photo_result['url'],
+            'passport_photo_url' => $passport_photo_result ? $passport_photo_result['url'] : null,
         ]);
 
         return redirect('/register-parking')->with('success', 'Parking registered successfully!');

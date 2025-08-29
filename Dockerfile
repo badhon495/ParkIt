@@ -26,6 +26,10 @@ ENV APP_ENV=production
 ENV APP_DEBUG=false
 ENV LOG_CHANNEL=stderr
 
+# Ensure storage directories exist and have proper permissions
+RUN mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views \
+    && chmod -R 775 storage bootstrap/cache
+
 # Render.com specific settings - bind to 0.0.0.0:10000
 ENV PORT=10000
 ENV HOST=0.0.0.0

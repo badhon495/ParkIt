@@ -184,7 +184,7 @@
                         @endphp
                         @forelse($images as $img)
                             <div style="display:flex;flex-direction:column;align-items:center;gap:0.5rem;">
-                                <img src="{{ asset('storage/' . $img) }}" alt="Garage Image" style="width:110px;height:110px;object-fit:cover;border-radius:6px;border:1px solid #ccc;">
+                                <img src="{{ filter_var($img, FILTER_VALIDATE_URL) ? $img : asset('storage/' . $img) }}" alt="Garage Image" style="width:110px;height:110px;object-fit:cover;border-radius:6px;border:1px solid #ccc;">
                                 <input type="checkbox" name="images[]" value="{{ $img }}">
                             </div>
                         @empty
